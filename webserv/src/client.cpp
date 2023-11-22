@@ -58,6 +58,7 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 
 bool server::client::checkGetRequest() {
 	if (this->clientGetRequest != NULL) {
+		std::cout << "filePath: " << clientGetRequest->getFilePath() << std::endl;
 		if (this->clientGetRequest->autoIndexListing) {
 			std::cout << "response for 619 got created\n";
 			response *newResponse = new response(this->clientGetRequest->getFilePath(), 619);

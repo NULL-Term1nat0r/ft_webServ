@@ -25,7 +25,7 @@ response &response::operator=(const response &other)
 }
 
 const char	*response::responseInvalidFileException::what() const throw() {
-	return "Invalid File Exception";
+	return "Invalid File Exception in response";
 }
 
 std::string response::getChunk(int chunkSize){
@@ -61,6 +61,8 @@ std::string response::createDirectoryListingHtml(){
 
 std::string response::createFirstChunk(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
+
+	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;
 	
 	if (!file.is_open())
 		throw responseInvalidFileException();
@@ -84,6 +86,7 @@ std::string response::createFirstChunk(int chunkSize){
 
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
+	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
 	if (!file.is_open()){
 		throw responseInvalidFileException();
 	}
@@ -103,7 +106,7 @@ std::string response::readFileContent(int chunkSize){
 
 long response::countFileSize(std::string filePath){
 	std::ifstream file(filePath.c_str(), std::ios::binary);
-
+	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
 	if (!file.is_open())
 		throw responseInvalidFileException();
 	file.seekg(0, std::ios::end);

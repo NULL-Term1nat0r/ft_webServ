@@ -131,7 +131,11 @@ bool cgiRequest::executeCgi() {
 		_returnFilePath = parsing::getErrorPagePath(504);
 		return false;
 	}
-
+	if (WEXITSTATUS(status) == 69) {
+		_returnFilePath = parsing::getErrorPagePath(500);
+		return false;
+	}
+	_returnFilePath = _tempFile;
 	return true;
 }
 
