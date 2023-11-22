@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Example</title>
+    <style>
+        body {
+            transition: background-color 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Cookie Example</h1>
+
+<script>
+    // Function to check if a cookie with a given name is set
+    function isCookieSet(cookieName) {
+        return document.cookie.split(';').some((item) => item.trim().startsWith(cookieName + '='));
+    }
+
+    // Function to set a cookie with a given name and value
+    function setCookie(cookieName, cookieValue) {
+        document.cookie = `${cookieName}=${cookieValue}; path=/`;
+    }
+
+    // Check if the 'exampleCookie' is set
+    if (!isCookieSet('exampleCookie')) {
+        // If not set, create a default cookie with value 'default'
+        setCookie('exampleCookie', 'default');
+    }
+
+    // Check if the 'exampleCookie' has a special value for background color
+    const backgroundColorCookieValue = getCookieValue('exampleCookie');
+    if (backgroundColorCookieValue === 'black') {
+        // Update the background color based on the cookie value
+        document.body.style.backgroundColor = backgroundColorCookieValue;
+    }
+
+    // Function to get the value of a cookie with a given name
+    function getCookieValue(cookieName) {
+        const cookie = document.cookie.split(';').find((item) => item.trim().startsWith(cookieName + '='));
+        return cookie ? cookie.split('=')[1] : null;
+    }
+
+    // Function to handle checkbox changes
+    function handleCheckboxChange(checkboxName, checkboxValue) {
+        const checkbox = document.getElementById(checkboxName);
+
+        // Check if the checkbox is checked
+        if (checkbox.checked) {
+            // If checked, set the cookie to the specified value
+            setCookie('exampleCookie', checkboxValue);
+
+            // Update the background color based on the cookie value
+            document.body.style.backgroundColor = checkboxValue;
+        }
+    }
+</script>
+
+<!-- Checkboxes to set the cookie value -->
+<label for="checkbox1">
+    <input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('checkbox1', 'value1')"> Checkbox 1
+</label>
+
+<label for="checkbox2">
+    <input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('checkbox2', 'value2')"> Checkbox 2
+</label>
+
+<!-- Checkbox to set background color to black -->
+<label for="checkboxBlack">
+    <input type="checkbox" id="checkboxBlack" onchange="handleCheckboxChange('checkboxBlack', 'black')"> Set Background to Black
+</label>
+
+</body>
+</html>

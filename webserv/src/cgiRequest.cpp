@@ -88,14 +88,6 @@ bool cgiRequest::cgiValidExtension(std::string url) {
 	return true;
 }
 
-void cgiRequest::handleAlarmSignal(int signal) {
-	if (signal == SIGALRM) {
-		std::cout << "alarm signal received\n";
-		cgiRequest::_errorSignal = true;
-	}
-	std::cerr << "ERROR: CGI script execution timed out (504 Gateway Timeout)" << std::endl;
-}
-
 bool cgiRequest::executeCgi() {
 	std::cout << "cgi request incoming\n";
 
@@ -109,8 +101,6 @@ bool cgiRequest::executeCgi() {
 	char *env[] = {query, NULL};
 	char *argv[] = {const_cast<char *>(_execPath.c_str()), const_cast<char *>(_skriptName.c_str()), NULL};
 
-	signal(SIGALRM, handleAlarmSignal);
-	alarm(_serverConfig._scriptTimeout);
 	// cgi timeout here
 	pid_t childId = fork();
 	if (childId == -1) {
@@ -121,6 +111,7 @@ bool cgiRequest::executeCgi() {
 		return false;
 	}
 	else if (childId == 0) {
+		alarm(_serverConfig._scriptTimeout);
 		if (dup2(_fileDescriptor, STDOUT_FILENO) == -1)
 			exit(69);		//setting the timeout for the script
 		if (chdir(_workingDirectory.c_str()) != 0){
@@ -133,24 +124,14 @@ bool cgiRequest::executeCgi() {
 	else {
 		waitpid(childId, &status, 0);
 		close(_fileDescriptor);
-		if (_alarmSignal) {
-			_returnFilePath = parsing::getErrorPagePath(408);
-			return false;
-		}
-		if (_errorSignal){
-			_returnFilePath = parsing::getErrorPagePath(504);
-			waitpid(childId, &status, 0);
-			return false;
-		}
-		alarm(0);
 	}
-
-	int exitStatus = WEXITSTATUS(status);
-	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGALRM) || (exitStatus != 0)) {
-		close(_fileDescriptor);
+	close(_fileDescriptor);
+	if (WIFSIGNALED(status))
+	{
 		_returnFilePath = parsing::getErrorPagePath(504);
 		return false;
 	}
+
 	return true;
 }
 
