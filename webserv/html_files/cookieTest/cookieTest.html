@@ -1,77 +1,109 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Cookie Color Page</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            transition: background-color 0.5s ease;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Cookie Color Page</h1>-->
+
+<!--<button onclick="changeColor()">Change Background Color</button>-->
+
+<!--<script>-->
+<!--    // Function to set a cookie with a given name and value-->
+<!--    function setCookie(cookieName, cookieValue) {-->
+<!--        document.cookie = `${cookieName}=${cookieValue}; path=/`;-->
+<!--    }-->
+
+<!--    // Function to get the value of a cookie with a given name-->
+<!--    function getCookieValue(cookieName) {-->
+<!--        const cookie = document.cookie.split(';').find((item) => item.trim().startsWith(cookieName + '='));-->
+<!--        return cookie ? cookie.split('=')[1] : null;-->
+<!--    }-->
+
+<!--    // Function to change the background color and update the cookie-->
+<!--    function changeColor() {-->
+<!--        const color = prompt("Enter a color (e.g., red, blue, green):");-->
+
+<!--        if (color) {-->
+<!--            document.body.style.backgroundColor = color;-->
+<!--            setCookie('backgroundColor', color);-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Check if the 'backgroundColor' cookie is set-->
+<!--    const backgroundColorCookieValue = getCookieValue('backgroundColor');-->
+
+<!--    // If the cookie is not set, display the default background color (green)-->
+<!--    if (!backgroundColorCookieValue) {-->
+<!--        document.body.style.backgroundColor = 'green';-->
+<!--    } else {-->
+<!--        // If the cookie is set, display the background color from the cookie-->
+<!--        document.body.style.backgroundColor = backgroundColorCookieValue;-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cookie Example</title>
-    <style>
-        body {
-            transition: background-color 0.5s ease;
-        }
-    </style>
+    <title>Client IP Page</title>
 </head>
 <body>
 
-<h1>Cookie Example</h1>
+<h1>Client IP Page</h1>
+
+<button onclick="saveClientIP()">Save Client IP</button>
 
 <script>
-    // Function to check if a cookie with a given name is set
-    function isCookieSet(cookieName) {
-        return document.cookie.split(';').some((item) => item.trim().startsWith(cookieName + '='));
-    }
-
     // Function to set a cookie with a given name and value
     function setCookie(cookieName, cookieValue) {
         document.cookie = `${cookieName}=${cookieValue}; path=/`;
     }
 
-    // Check if the 'exampleCookie' is set
-    if (!isCookieSet('exampleCookie')) {
-        // If not set, create a default cookie with value 'default'
-        setCookie('exampleCookie', 'default');
+    // Function to make a request to get the client's IP address
+    function getClientIP() {
+        return fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => data.ip)
+            .catch(error => {
+                console.error('Error getting IP address:', error);
+                return null;
+            });
     }
 
-    // Check if the 'exampleCookie' has a special value for background color
-    const backgroundColorCookieValue = getCookieValue('exampleCookie');
-    if (backgroundColorCookieValue === 'black') {
-        // Update the background color based on the cookie value
-        document.body.style.backgroundColor = backgroundColorCookieValue;
-    }
+    // Function to save the client's IP in a cookie
+    async function saveClientIP() {
+        const clientIP = await getClientIP();
 
-    // Function to get the value of a cookie with a given name
-    function getCookieValue(cookieName) {
-        const cookie = document.cookie.split(';').find((item) => item.trim().startsWith(cookieName + '='));
-        return cookie ? cookie.split('=')[1] : null;
-    }
-
-    // Function to handle checkbox changes
-    function handleCheckboxChange(checkboxName, checkboxValue) {
-        const checkbox = document.getElementById(checkboxName);
-
-        // Check if the checkbox is checked
-        if (checkbox.checked) {
-            // If checked, set the cookie to the specified value
-            setCookie('exampleCookie', checkboxValue);
-
-            // Update the background color based on the cookie value
-            document.body.style.backgroundColor = checkboxValue;
+        if (clientIP) {
+            setCookie('clientIP', clientIP);
+            alert('Client IP saved successfully!');
+        } else {
+            alert('Unable to get client IP.');
         }
     }
+
+    // Check if the 'clientIP' cookie is set
+    const clientIPCookieValue = document.cookie.split(';').find(item => item.trim().startsWith('clientIP='));
+
+    // If the cookie is set, display the client's IP
+    if (clientIPCookieValue) {
+        const clientIP = clientIPCookieValue.split('=')[1];
+        alert(`Client IP from cookie: ${clientIP}`);
+    }
 </script>
-
-<!-- Checkboxes to set the cookie value -->
-<label for="checkbox1">
-    <input type="checkbox" id="checkbox1" onchange="handleCheckboxChange('checkbox1', 'value1')"> Checkbox 1
-</label>
-
-<label for="checkbox2">
-    <input type="checkbox" id="checkbox2" onchange="handleCheckboxChange('checkbox2', 'value2')"> Checkbox 2
-</label>
-
-<!-- Checkbox to set background color to black -->
-<label for="checkboxBlack">
-    <input type="checkbox" id="checkboxBlack" onchange="handleCheckboxChange('checkboxBlack', 'black')"> Set Background to Black
-</label>
 
 </body>
 </html>
