@@ -1,0 +1,109 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Cookie Color Page</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            transition: background-color 0.5s ease;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>Cookie Color Page</h1>-->
+
+<!--<button onclick="changeColor()">Change Background Color</button>-->
+
+<!--<script>-->
+<!--    // Function to set a cookie with a given name and value-->
+<!--    function setCookie(cookieName, cookieValue) {-->
+<!--        document.cookie = `${cookieName}=${cookieValue}; path=/`;-->
+<!--    }-->
+
+<!--    // Function to get the value of a cookie with a given name-->
+<!--    function getCookieValue(cookieName) {-->
+<!--        const cookie = document.cookie.split(';').find((item) => item.trim().startsWith(cookieName + '='));-->
+<!--        return cookie ? cookie.split('=')[1] : null;-->
+<!--    }-->
+
+<!--    // Function to change the background color and update the cookie-->
+<!--    function changeColor() {-->
+<!--        const color = prompt("Enter a color (e.g., red, blue, green):");-->
+
+<!--        if (color) {-->
+<!--            document.body.style.backgroundColor = color;-->
+<!--            setCookie('backgroundColor', color);-->
+<!--        }-->
+<!--    }-->
+
+<!--    // Check if the 'backgroundColor' cookie is set-->
+<!--    const backgroundColorCookieValue = getCookieValue('backgroundColor');-->
+
+<!--    // If the cookie is not set, display the default background color (green)-->
+<!--    if (!backgroundColorCookieValue) {-->
+<!--        document.body.style.backgroundColor = 'green';-->
+<!--    } else {-->
+<!--        // If the cookie is set, display the background color from the cookie-->
+<!--        document.body.style.backgroundColor = backgroundColorCookieValue;-->
+<!--    }-->
+<!--</script>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Client IP Page</title>
+</head>
+<body>
+
+<h1>Client IP Page</h1>
+
+<button onclick="saveClientIP()">Save Client IP</button>
+
+<script>
+    // Function to set a cookie with a given name and value
+    function setCookie(cookieName, cookieValue) {
+        document.cookie = `${cookieName}=${cookieValue}; path=/`;
+    }
+
+    // Function to make a request to get the client's IP address
+    function getClientIP() {
+        return fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => data.ip)
+            .catch(error => {
+                console.error('Error getting IP address:', error);
+                return null;
+            });
+    }
+
+    // Function to save the client's IP in a cookie
+    async function saveClientIP() {
+        const clientIP = await getClientIP();
+
+        if (clientIP) {
+            setCookie('clientIP', clientIP);
+            alert('Client IP saved successfully!');
+        } else {
+            alert('Unable to get client IP.');
+        }
+    }
+
+    // Check if the 'clientIP' cookie is set
+    const clientIPCookieValue = document.cookie.split(';').find(item => item.trim().startsWith('clientIP='));
+
+    // If the cookie is set, display the client's IP
+    if (clientIPCookieValue) {
+        const clientIP = clientIPCookieValue.split('=')[1];
+        alert(`Client IP from cookie: ${clientIP}`);
+    }
+</script>
+
+</body>
+</html>
