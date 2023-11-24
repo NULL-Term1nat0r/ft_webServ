@@ -23,7 +23,11 @@ server::server(serverConf &serverConf, int serverIndex) : serverConfig(serverCon
 }
 
 server::~server() {
-	close(serverSocket);
+	for (size_t i = 0; i < pollEvents.size(); i++) {
+		close(pollEvents[i].fd);
+	}
+
+	//close(serverSocket);
 }
 
 void server::createServerSocket() {
@@ -132,6 +136,23 @@ void server::serverRoutine(){
 	}
 }
 
+#include <signal.h>
+
+bool server::exitServer = false;
+
+void sigintHandler(int sigNum)
+{
+	if (sigNum == SIGINT) {
+		std::cout << "webserver closed" << std::endl;
+		server::exitServer = true;
+	}
+}
+
+void	getSignals() {
+	signal(SIGINT, sigintHandler);
+}
+
+
 void server::runAllServers(char *configFilePath) {
 	Config conf = Config();
 	conf.parseConfFile(configFilePath);
@@ -147,12 +168,17 @@ void server::runAllServers(char *configFilePath) {
 			std::cout << "caught exception of server" << std::endl;
 		}
 	}
-	while (true) {
+
+	getSignals();
+	while (!exitServer) {
 //		for (int i = 0; i < servers.size(); i++){
 		for (int i = 0; static_cast<size_t>(i) < servers.size(); i++){
 //			std::cout << "rewrite for upload: " << servers[i]->serverConfig._server[0].locations["/random"].rewrite << std::endl;
 			servers[i]->serverRoutine();
 		}
+	}
+	for (size_t i = 0; i < servers.size(); i++) {
+		delete servers[i];
 	}
 }
 

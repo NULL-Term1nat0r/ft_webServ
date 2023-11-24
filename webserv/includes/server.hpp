@@ -29,6 +29,9 @@ class server {
 	private:
 
 	public:
+		static bool exitServer;
+
+
 		server(serverConf &serverConf, int serverIndex);
 		~server();
 
