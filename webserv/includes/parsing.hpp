@@ -20,7 +20,7 @@ public:
 //	static std::string getLineOfKey(std::string str, std::string key);
 
 
-	static std::string returnValue(std::string key, std::string source, std::string limiter);
+	static std::string returnValue(std::string search, std::string source, std::string delimeter);
 	static std::vector<uint8_t> unsignedCharToVector(unsigned char *data, size_t size);
 	static std::string getFileExtension(std::string filePath);
 	static std::string getFileType(std::string filePath);
@@ -31,6 +31,12 @@ public:
 	static std::vector<std::string> split(const std::string s, char delim);
 	static std::string returnPage(const std::string &url);
 	static std::string getErrorPagePath(int errorCode);
+
+	static char decodeHex(char c);
+	static char decodePercentEncoding(const char *encoded);
+	static void decodeUrl(std::string &url);
+	static std::string getFileName(std::string filePath);
+
 
 };
 

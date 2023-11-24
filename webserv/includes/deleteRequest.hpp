@@ -44,7 +44,7 @@ public:
 			virtual const char	*what() const throw();
 	};
 
-	void deleteFile(const char*filePath);
+	void deleteFile();
 
 };
 

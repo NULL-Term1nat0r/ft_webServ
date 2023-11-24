@@ -58,6 +58,7 @@ void server::createServerSocket() {
 void server::addSocket(int clientSocket) {
 	struct pollfd _pollfd;
 	_pollfd.fd = clientSocket;
+	fcntl(clientSocket, F_SETFL, O_NONBLOCK | FD_CLOEXEC);
 	_pollfd.events = POLLIN;
 	pollEvents.push_back(_pollfd);
 	client newClient(clientSocket, serverConfig, serverIndex);
@@ -125,18 +126,15 @@ void server::serverRoutine(){
 			clients[i].executeClientResponse();
 		}
 //		std::cout << "if (time: " << time(NULL) << "- socketTimeouts[" << i << "]: " << socketTimeouts[i] << " > serv._clienttimeout: " << serv._clientTimeout << std::endl;
-		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {
-			if (clients[i].clientSocket != serverSocket) {
-				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
-				std::cout << "client: " << i << " timed out" << std::endl;
-				removeSocket(static_cast<int>(i));
-			}
-
-		}
+//		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {
+//			if (clients[i].clientSocket != serverSocket) {
+//				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
+//				std::cout << "client: " << i << " timed out" << std::endl;
+//				removeSocket(static_cast<int>(i));
+//			}
+//		}
 	}
 }
-
-#include <signal.h>
 
 bool server::exitServer = false;
 

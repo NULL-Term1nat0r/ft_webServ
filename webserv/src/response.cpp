@@ -86,7 +86,7 @@ std::string response::createFirstChunk(int chunkSize){
 
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
-	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
+//	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
 	if (!file.is_open()){
 		throw responseInvalidFileException();
 	}

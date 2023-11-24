@@ -21,15 +21,21 @@ std::string parsing::vectorToString(const std::vector<uint8_t>& inputVector) {
 	return result;
 }
 
-std::string parsing::returnValue(std::string key, std::string source, std::string limiter){
-	size_t start = source.find(key);
-	size_t end = source.find(limiter, start + key.length());
-	if (key == "filename=\""){
-		if (source.find(key) == std::string::npos)
-			std::cout << "key not found" << std::endl;
-	}
-	return source.substr(start + key.length(), end - start - key.length());
+std::string parsing::returnValue(std::string search, std::string source, std::string delimeter){
+	int start = source.find(search) + search.length() + delimeter.length();
+	int end = source.find(delimeter, start);
+	return source.substr(start, end - start);
 }
+
+//std::string parsing::returnValue(std::string key, std::string source, std::string limiter){
+//	size_t start = source.find(key);
+//	size_t end = source.find(limiter, start + key.length());
+//	if (key == "filename=\""){
+//		if (source.find(key) == std::string::npos)
+//			std::cout << "key not found" << std::endl;
+//	}
+//	return source.substr(start + key.length(), end - start - key.length());
+//}
 
 std::vector<uint8_t> parsing::unsignedCharToVector(unsigned char *data, size_t size){
 	std::vector<uint8_t> result;
@@ -79,23 +85,59 @@ std::vector<std::string> parsing::split(const std::string s, char delim) {
 }
 
 std::string parsing::returnPage(const std::string &url) {
-	if (url == "")
+	std::cout << "jump into returnPage" << std::endl;
+	if (url == ""){
+		std::cout << "url is empty" << std::endl;
 		return "";
-	if (url == "/")				//if url is "/" return index.html
+	}
+	if (url == "/")	{
+		std::cout << "url is /" << std::endl;
 		return "/";
+	}			//if url is "/" return index.html
 	std::vector<std::string> result = split(url, '/');
 	std::string path = "./html_files" + url;
 	if (folderExists(path)) {
+		std::cout << "the url is a folderPath and not a filePath" << std::endl;
 		return (result[result.size() - 1]);
 	}
 	if (fileExists(path)){
+		std::cout << "the url is a filePath and not a folderPath" << std::endl;
 		if (result.size() == 1){
 			return ("/");
 		}
 		return (result[result.size() - 2]);
 	}
+	std::cout << "the url is neither a filePath nor a folderPath" << std::endl;
+	std::cout << "urlstring: " << path << std::endl;
 	return "";
 }
+
+char parsing::decodeHex(char c) {
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	else if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	else if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	else
+		return 0;
+}
+
+char parsing::decodePercentEncoding(const char* encoded) {
+	if (encoded[0] != '%' || !isxdigit(encoded[1]) || !isxdigit(encoded[2]))
+		return 0;
+	return (decodeHex(encoded[1]) << 4) + decodeHex(encoded[2]);
+}
+
+void	parsing::decodeUrl(std::string &url) {
+	for (size_t pos = 0; pos != std::string::npos; pos = url.find('%', pos + 1)) {
+		pos = url.find('%', pos);
+		if (pos != std::string::npos)
+			url = url.substr(0, pos) + decodePercentEncoding(url.substr(pos, 3).c_str()) + url.substr(pos + 3);
+	}
+}
+
+
 
 std::string parsing::getFileType(std::string filePath){
 	std::string extension = getFileExtension(filePath);

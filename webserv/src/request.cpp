@@ -47,11 +47,12 @@ bool request::checkCgi(std::string url) {
 
 void request::parseURL(){
 	if (this->_request.find("GET") != std::string::npos)
-		this->_stringURL = parsing::returnValue("POST ", this->_request,  " ");
+		this->_stringURL = parsing::returnValue("GET", this->_request,  " ");
 	else if (this->_request.find("POST") != std::string::npos)
-		this->_stringURL = parsing::returnValue("POST ", this->_request,  " ");
+		this->_stringURL = parsing::returnValue("POST", this->_request,  " ");
 	else if (this->_request.find("DELETE") != std::string::npos)
-		this->_stringURL = parsing::returnValue("POST ", this->_request,  " ");
+		this->_stringURL = parsing::returnValue("DELETE", this->_request,  " ");
+	parsing::decodeUrl(this->_stringURL);
 }
 
 std::string request::getMethodString(request &request){
@@ -103,6 +104,8 @@ void request::printRequest(){
 
 bool request::checkPageMethod(std::string method, std::string url, int _serverIndex, serverConf &_serverConfig){
 	std::string page = parsing::returnPage(url);
+	std::cout << red << "url: " << url << reset << std::endl; // "/random
+	std::cout << "page for checking pageMethod: " << page << std::endl; // "/random
 	if (page != "/")
 		page = "/" + page;
 	if (page == "")

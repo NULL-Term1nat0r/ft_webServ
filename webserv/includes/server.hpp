@@ -55,6 +55,8 @@ class server {
 				void createNewDeleteRequest(std::vector<uint8_t> _request, request &newRequest);
 				void createNewCgiRequest(std::vector<uint8_t> _request, request &newRequest);
 
+				void setUpResponse(std::string filePath, int statusCode, request *request);
+
 
 				int clientSocket;
 				serverConf &serverConfig;
