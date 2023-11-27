@@ -54,24 +54,23 @@ void cgiRequest::setScriptPage() {
 	if (_baseRequest->getStringURL().find(".php?") != std::string::npos) {
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".php?"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = result[result.size() - 2];
+		_scriptPage = "/" + result[result.size() - 2];
 	}
 	else if (_baseRequest->getStringURL().find(".py?") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".py?"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = result[result.size() - 2];
+		_scriptPage = "/" + result[result.size() - 2];
 	}
 	else if (_baseRequest->getStringURL().find(".php") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".php"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = result[result.size() - 2];
+		_scriptPage = "/" + result[result.size() - 2];
 	}
 	else if (_baseRequest->getStringURL().find(".py") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".py"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = result[result.size() - 2];
+		_scriptPage = "/" + result[result.size() - 2];
 	}
-	std::cout << "pageforCgi: " << _scriptPage << std::endl;
 }
 
 void cgiRequest::getErrorHtmlContent(int _errorCode) {
@@ -107,7 +106,9 @@ bool cgiRequest::cgiValidExtension(std::string url) {
 	std::cout << "cgiPath: " << _cgiPath << std::endl;
 	_tempFile = "./html_files/tmp_cgi.txt";
 	if (_cgiPath.find(".php") != std::string::npos){
-		std::cout << "php boolean: " << checkExtensionServerConfig(".php") << std::endl;
+//		std::cout << "php boolean: " << checkExtensionServerConfig(".php") << std::endl;
+//		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[0] << std::endl;
+//		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[1] << std::endl;
 		if (checkExtensionServerConfig(".php"))
 			_execExtension = "php";
 		else
