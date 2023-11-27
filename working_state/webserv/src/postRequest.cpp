@@ -14,12 +14,17 @@
 
 postRequest::postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
 	parseFileName();
+	std::cout << "test1\n";
 	parseDataType();
+	std::cout << "test2\n";
 	parseFileType();
+	std::cout << "test3\n";
+	std::cout << "fileNamepost: " << _fileName << std::endl;
+	std::cout << "fileTypepost: " << _fileType << std::endl;
 	this->_firstChunkSent = false;
 	this->_allChunksSent = false;
-	this->_boundary = parsing::returnValue("boundary=", _baseRequest->getStringURL(), "\r");
-	this->_contentLength = std::stoi(parsing::returnValue("Content-Length:", _baseRequest->getStringURL(), "\r"));
+	this->_boundary = parsing::returnValue("boundary=", _baseRequest->getRequestString(), "\r");
+	this->_contentLength = std::stoi(parsing::returnValue("Content-Length:", _baseRequest->getRequestString(), "\r"));
 	this->_filePath = "./html_files/upload/" + this->_fileName;
 	this->_dataRecieved = 0;
 }
@@ -33,17 +38,22 @@ void postRequest::printPostRequest() {
 
 void postRequest::parseDataType() {
 
-	if (_baseRequest->getStringURL().find("Content-Type: multipart/form-data") != std::string::npos)
+	if (_baseRequest->getRequestString().find("Content-Type: multipart/form-data") != std::string::npos)
 		this->_multiFormData = true;
-	else if (_baseRequest->getStringURL().find("Content-Type: text/plain") != std::string::npos)
+	else if (_baseRequest->getRequestString().find("Content-Type: text/plain") != std::string::npos)
 		this->_textData = true;
 }
 
 void postRequest::parseFileType() {
-	size_t start = _baseRequest->getStringURL().find("Content-Type: ");
-	start = _baseRequest->getStringURL().find("Content-Type: ", start + 1);
-	size_t end = _baseRequest->getStringURL().find("\r", start + 14);
-	this->_fileType = _baseRequest->getStringURL().substr(start + 14, end - start - 14);
+	std::cout << "test11\n";
+	size_t start = _baseRequest->getRequestString().find("Content-Type: ");
+	std::cout << "test22\n";
+	start = _baseRequest->getRequestString().find("Content-Type: ", start + 1);
+	std::cout << "test33\n";
+	size_t end = _baseRequest->getRequestString().find("\r", start + 14);
+	std::cout << "test44\n";
+	this->_fileType = _baseRequest->getRequestString().substr(start + 14, end - start - 14);
+	std::cout << "test55\n";
 }
 
 void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
@@ -63,7 +73,7 @@ void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 
 void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
 	std::cout << "-------content length: " << _contentLength << std::endl;
-	size_t boundaryPos = _baseRequest->getStringURL().find(this->_fileType + "\r\n\r\n");
+	size_t boundaryPos = _baseRequest->getRequestString().find(this->_fileType + "\r\n\r\n");
 	if (boundaryPos != std::string::npos) {
 		boundaryPos += this->_fileType.length() + 4;
 	} else {

@@ -21,6 +21,7 @@ private:
 	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
+	std::string _scriptPage;
 	std::string _cgiPath;
 	std::string _skriptName;
 	std::string _tempFile;
@@ -41,9 +42,12 @@ public:
 	~cgiRequest();
 	static bool _errorSignal;
 	bool cgiCheckLanguage() const;
+	bool checkExtensionServerConfig(std::string extension);
 	bool cgiValidExtension(std::string url);
 	bool createTemporaryFile();
 	bool executeCgi();
+
+	void setScriptPage();
 
 	bool inputCheck();
 	static void handleAlarmSignal(int signal);
