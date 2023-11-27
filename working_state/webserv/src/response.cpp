@@ -54,6 +54,7 @@ std::string response::createDirectoryListingHtml(){
 }
 
 std::string response::createFirstChunk(int chunkSize){
+	std::cout << "filePath in response: " << this->filePath << std::endl;
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
 
 //	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;

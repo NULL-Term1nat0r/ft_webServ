@@ -12,6 +12,18 @@ server::client::client(int clientSocket, serverConf &serverConfig, int serverInd
 }
 
 server::client::~client() {
+	if (this->clientGetRequest != NULL)
+		delete this->clientGetRequest;
+	if (this->clientPostRequest != NULL)
+		delete this->clientPostRequest;
+	if (this->clientDeleteRequest != NULL)
+		delete this->clientDeleteRequest;
+	if (this->clientCgiRequest != NULL)
+		delete this->clientCgiRequest;
+	if (this->clientResponse != NULL)
+		delete this->clientResponse;
+	if (this->baseRequest != NULL)
+		delete this->baseRequest;
 }
 
 void server::client::executeClientRequest(){
@@ -48,6 +60,8 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 			if (clientPostRequest->getAllChunksSent()) {
 				response *newResponse = new response("./html_files/uploadSuccessful.html", 201, serverConfig);
 				clientResponse = newResponse;
+				delete this->baseRequest;
+				this->baseRequest = NULL;
 				delete this->clientPostRequest;
 				this->clientPostRequest = NULL;
 			}
@@ -64,6 +78,8 @@ bool server::client::checkGetRequest() {
 			std::cout << "response for 619 got created\n";
 			response *newResponse = new response(this->clientGetRequest->getFilePath(), 619, serverConfig);
 			clientResponse = newResponse;
+			delete this->baseRequest;
+			this->baseRequest = NULL;
 			delete clientGetRequest;
 			clientGetRequest = NULL;
 			return true;
@@ -71,6 +87,8 @@ bool server::client::checkGetRequest() {
 		else {
 			response *newResponse = new response(clientGetRequest->getFilePath(), 200, serverConfig);
 			clientResponse = newResponse;
+			delete this->baseRequest;
+			this->baseRequest = NULL;
 			delete clientGetRequest;
 			clientGetRequest = NULL;
 			return true;
@@ -83,6 +101,8 @@ bool server::client::checkDeleteRequest() {
 	if (this->clientDeleteRequest != NULL) {
 		response *newResponse = new response("./html_files/deleteSuccessful.html", 200, serverConfig);
 		clientResponse = newResponse;
+		delete this->baseRequest;
+		this->baseRequest = NULL;
 		delete clientDeleteRequest;
 		clientDeleteRequest = NULL;
 		return true;
@@ -96,6 +116,8 @@ bool server::client::checkCgiRequest() {
 		clientCgiRequest->executeCgi();
 		response *newResponse = new response(clientCgiRequest->getFilePath(), 200, serverConfig);
 		clientResponse = newResponse;
+		delete this->baseRequest;
+		this->baseRequest = NULL;
 		delete clientCgiRequest;
 		clientCgiRequest = NULL;
 		return true;
@@ -136,6 +158,7 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 	if (this->clientGetRequest == NULL && this->clientPostRequest == NULL && this->clientDeleteRequest == NULL && this->clientCgiRequest == NULL) {
 //		std::cout << "----------------------------------NEW-----REQUEST-------------------------------------------\n" << parsing::vectorToString(_request, 1500) <<std::endl;
 		this->baseRequest = new request(_request, serverConfig, serverIndex);
+		std::cout << "url: " << this->baseRequest->getStringURL() << std::endl;
 
 		std::string method  = this->baseRequest->getMethodString();
 		if (method == "")
@@ -171,6 +194,7 @@ void server::client::createNewPostRequest(){
 	if (this->clientPostRequest->getContentLength() > serverConfig._server[serverIndex].bodySize) {
 		response *newResponse = new response("./html_files/errorPages/error413.html", 413, serverConfig);
 		clientResponse = newResponse;
+		delete this->baseRequest;
 		delete this->clientPostRequest;
 		this->clientPostRequest = NULL;
 	}
@@ -191,6 +215,8 @@ void server::client::executeClientResponse(){
 				std::cout << "file removed\n";
 			else
 				std::cout << "file not removed\n";
+			delete this->clientResponse;
+			this->clientResponse = NULL;
 		}
 		else if (this->clientResponse->_allChunkSent) {
 			delete this->clientResponse;

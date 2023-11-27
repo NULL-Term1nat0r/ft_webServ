@@ -143,7 +143,8 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 			fileDescriptor = open(file.c_str(), O_RDONLY);
 			if (fileDescriptor == -1 || it->second.index == "")
 				it->second.indexBool = false;
-			close(fileDescriptor);
+			if (fileDescriptor != -1)
+				close(fileDescriptor);
 		}
 	}
 }

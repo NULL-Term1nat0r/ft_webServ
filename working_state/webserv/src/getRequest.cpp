@@ -52,13 +52,13 @@ std::string getRequest::createFilePath(){
 			return "./html_files/index.html";
 		return parsing::getErrorPagePath(403);
 	}				//if url is "/" return index.html
-	else if (parsing::fileExists(("./html_files" + _baseRequest->getStringURL()).c_str()))
+	else if (parsing::fileExists(("./html_files" + _baseRequest->getStringURL()).c_str())){
 		return "./html_files" + _baseRequest->getStringURL();
-
-
+	}
 	else if (_serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].autoindex == "on" && _serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].indexBool){
-		if (parsing::fileExists(("./html_files" +  _baseRequest->getStringURL() + _baseRequest->getStringURL() + ".html").c_str()))
+		if (parsing::fileExists(("./html_files" +  _baseRequest->getStringURL() + _baseRequest->getStringURL() + ".html").c_str())) {
 			return "./html_files" + _baseRequest->getStringURL() + _baseRequest->getStringURL() + ".html";
+		}
 		else {
 			this->autoIndexListing = true;
 			std::cout << "autoIndexFile address: " << &this->autoIndexListing << std::endl;

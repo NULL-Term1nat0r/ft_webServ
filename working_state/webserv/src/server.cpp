@@ -26,6 +26,9 @@ server::~server() {
 	for (size_t i = 0; i < pollEvents.size(); i++) {
 		close(pollEvents[i].fd);
 	}
+	for (size_t i = 0; i < clients.size(); i++) {
+		clients[i].~client();
+	}
 
 	//close(serverSocket);
 }
@@ -69,6 +72,7 @@ void server::addSocket(int clientSocket) {
 void server::removeSocket(int index) {
 	close(pollEvents[index].fd);
 	pollEvents.erase(pollEvents.begin() + index);
+	clients[index].~client();
 	clients.erase(clients.begin() + index);
 }
 
@@ -173,21 +177,24 @@ void server::runAllServers(char *configFilePath) {
 	}
 
 	getSignals();
-//	while (!exitServer) {
-////		for (int i = 0; i < servers.size(); i++){
-//		for (int i = 0; static_cast<size_t>(i) < servers.size(); i++){
-////			std::cout << "rewrite for upload: " << servers[i]->serverConfig._server[0].locations["/random"].rewrite << std::endl;
-//			servers[i]->serverRoutine();
-//		}
-//	}
-//	for (size_t i = 0; i < servers.size(); i++) {
-//		delete servers[i];
-//	}
-	while (!exitServer)
-	{
-		servers[0]->serverRoutine();
+	while (!exitServer) {
+//		for (int i = 0; i < servers.size(); i++){
+		for (int i = 0; static_cast<size_t>(i) < servers.size(); i++){
+//			std::cout << "rewrite for upload: " << servers[i]->serverConfig._server[0].locations["/random"].rewrite << std::endl;
+			servers[i]->serverRoutine();
+		}
 	}
+	for (size_t i = 0; i < servers.size(); i++) {
+		delete servers[i];
+	}
+//	while (!exitServer)
+//	{
+//		servers[0]->serverRoutine();
+//	}
 }
+
+
+
 
 serverConf& server::getServerConfig(){
 	return this->serverConfig;
