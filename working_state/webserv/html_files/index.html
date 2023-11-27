@@ -3,121 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyberpunk File Upload</title>
+    <title>Button Page</title>
 
     <style>
         body {
-            font-family: 'Orbitron', sans-serif;
-            background-image: url('picture-of-the-matrix-brain-and-people-consisting.jpeg');
-            background-size: 100% 100%; /* Adjust this value */
+            font-family: 'Roboto', sans-serif; /* Change to a futuristic font */
+            background-image: url('Yoshito-Hasaka-ci-porta-in-un-universo-cyberpunk-alla-Blade-Runner-Collater.al-12.jpg');
+            background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #111;
             color: #fff;
             text-align: center;
-            margin: 0; /* Remove margin to ensure full coverage */
-            height: 100vh; /* Ensure body covers the whole viewport height */
-        }
-
-        h1 {
-            font-family: 'Matrix Regular', sans-serif;
-            color: #3498db;
-        }
-
-        form {
-            background-color: rgba(51, 51, 51, 0.8); /* Adjust the alpha value as needed */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-            margin-top: 20px;
-            max-width: 400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        input[type="file"] {
-            display: none;
-        }
-
-        label {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-            margin-bottom: 15px;
-        }
-
-        input[type="submit"] {
-            background-color: #2ecc71;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 10px;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #27ae60;
-        }
-
-        a {
-            text-decoration: none;
-            color: #3498db;
-            display: block;
-            margin-top: 20px;
+            height: 100vh;
+            overflow: hidden; /* Hide horizontal scrollbar due to margin-left */
         }
 
         button {
-            background-color: #e74c3c;
+            background-color: #3498db;
             color: #fff;
-            padding: 10px 20px;
+            padding: 10px 20px; /* Reverted to the original size */
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin: 10px;
+            font-size: 24px; /* Reverted to the original size */
         }
 
         button:hover {
-            background-color: #c0392b;
+            background-color: #2980b9;
         }
 
-        #fileNameDisplay {
-            color: #3498db;
-            margin-bottom: 15px;
+        #randomMessages {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 90px; /* 2x as big */
+            opacity: 0; /* Start with zero opacity */
+            transition: opacity 1s ease-in-out; /* Apply transition effect */
         }
+
+        /* Style for the invisible button */
+        #easterEggButton {
+            background: none;
+            border: none;
+            color: transparent;
+            cursor: pointer;
+            outline: none;
+        }
+        .yellow-text {
+            color: #f1c40f;
+        }
+
     </style>
-
-    <script>
-        // JavaScript function to update the file name display
-        function updateFileName() {
-            var input = document.getElementById('fileToUpload');
-            var fileNameDisplay = document.getElementById('fileNameDisplay');
-
-            fileNameDisplay.textContent = input.files[0].name;
-        }
-    </script>
 </head>
 <body>
 
-<h1>Cyberpunk File Upload</h1>
+<button onclick="location.href='fileUpload.html'">File Upload</button>
+<button onclick="location.href='cookieTest/cookieTest.html'">Cookie Test</button>
+<button onclick="location.href='Cgi/Cgi.html'">Cgi Test</button>
+<button onclick="location.href='creators.html'">Creators</button>
+<button onclick="location.href='readme.html'">Readme</button>
 
-<form action="./upload" method="post" enctype="multipart/form-data">
-    <label for="fileToUpload">Choose a file</label>
-    <input type="file" name="fileToUpload" id="fileToUpload" onchange="updateFileName()">
-    <div id="fileNameDisplay"></div>
-    <input type="submit" value="Upload File" name="submit">
-</form>
+<!-- Invisible button for the easter egg -->
+<button id="easterEggButton" onclick="loadEasterEgg()">Easter Egg</button>
 
-<a href="upload/upload.html">
-    <button>Uploaded picture files</button>
-</a>
-<!-- Add a button to redirect to another page -->
-<!--<a href="./upload">-->
-<!--    <button>Go to Another Page</button>-->
-<!--</a>-->
+<div id="randomMessages"></div>
+
+<script>
+    const messages = [
+        "Hello!",
+        "Welcome to our webserv!",
+        "It's piece of shit, but it's our shit!",
+        "Head to 'Readme' for instructions!",
+        "Should I call you mista?",
+    ];
+
+    let currentIndex = 0;
+
+    function updateRandomMessage() {
+        const randomMessagesElement = document.getElementById('randomMessages');
+        randomMessagesElement.style.opacity = 0; // Start fading out
+
+        setTimeout(() => {
+            randomMessagesElement.textContent = messages[currentIndex];
+            randomMessagesElement.style.opacity = 1; // Start fading in
+
+            currentIndex = (currentIndex + 1) % messages.length; // Move to the next message, cycle to the first if at the end
+        }, 1000); // Wait for 1 second before changing content
+    }
+
+    // Initial message
+    updateRandomMessage();
+
+    // Change message every 5 seconds
+    setInterval(updateRandomMessage, 6000); // Increased interval to accommodate the fade effect
+
+    // Function to load the easter egg
+    function loadEasterEgg() {
+        window.location.href = 'easterEgg.html'; // Replace with the actual file path
+    }
+</script>
 
 </body>
 </html>

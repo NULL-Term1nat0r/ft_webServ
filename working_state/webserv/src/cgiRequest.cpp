@@ -50,27 +50,38 @@ bool cgiRequest::inputCheck() {
 	return true;
 }
 
+std::string cgiRequest::constructScriptPage(std::vector<std::string> &folderContainer) {
+	std::string temp = "";
+	std::cout << "containersize: " << folderContainer.size();
+	for (size_t i = 0; i <= folderContainer.size() - 2; i++) {
+		temp += "/" + folderContainer[i];
+	}
+	std::cout << "constructed cgiFolder: " << _cgiPath << std::endl;
+	return temp;
+}
+
 void cgiRequest::setScriptPage() {
 	if (_baseRequest->getStringURL().find(".php?") != std::string::npos) {
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".php?"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = "/" + result[result.size() - 2];
+		_scriptPage = constructScriptPage(result);
 	}
 	else if (_baseRequest->getStringURL().find(".py?") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".py?"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = "/" + result[result.size() - 2];
+		_scriptPage = constructScriptPage(result);
 	}
 	else if (_baseRequest->getStringURL().find(".php") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".php"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = "/" + result[result.size() - 2];
+		_scriptPage = constructScriptPage(result);
 	}
 	else if (_baseRequest->getStringURL().find(".py") != std::string::npos){
 		std::string urlSubString = _baseRequest->getStringURL().substr(0, _baseRequest->getStringURL().find(".py"));
 		std::vector<std::string> result = parsing::split(urlSubString, '/');
-		_scriptPage = "/" + result[result.size() - 2];
+		_scriptPage = constructScriptPage(result);
 	}
+	std::cout << "scriptPage: " << _scriptPage << std::endl;
 }
 
 void cgiRequest::getErrorHtmlContent(int _errorCode) {
@@ -103,6 +114,7 @@ bool cgiRequest::cgiValidExtension(std::string url) {
 	}
 	else
 		_cgiPath =  "./html_files" + url;
+	std::cout << "url: " << url << std::endl;
 	std::cout << "cgiPath: " << _cgiPath << std::endl;
 	_tempFile = "./html_files/tmp_cgi.txt";
 	if (_cgiPath.find(".php") != std::string::npos){
@@ -115,6 +127,9 @@ bool cgiRequest::cgiValidExtension(std::string url) {
 			return false;
 	}
 	if (_cgiPath.find(".py") != std::string::npos) {
+//		std::cout << "php boolean: " << checkExtensionServerConfig(".php") << std::endl;
+//		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[0] << std::endl;
+//		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[1] << std::endl;
 		if (checkExtensionServerConfig(".py"))
 			_execExtension = "python3";
 		else

@@ -47,6 +47,7 @@ public:
 	bool createTemporaryFile();
 	bool executeCgi();
 
+	std::string constructScriptPage(std::vector<std::string> &folderContainer);
 	void setScriptPage();
 
 	bool inputCheck();

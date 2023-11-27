@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creators Page</title>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('img.png');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden; /* Hide horizontal scrollbar */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 24px;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .github-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: auto; /* Move the buttons to the bottom */
+        }
+
+        .github-buttons button:not(:last-child) {
+            margin-right: 50px; /* Adjust the spacing between buttons */
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="location.href='index.html'">Main Page</button>
+
+<div class="github-buttons">
+    <button onclick="redirectToGitHub('https://github.com/Valsimot42')">tbolkova</button>
+    <button onclick="redirectToGitHub('https://github.com/NULL-Term1nat0r')">estruckm</button>
+    <button onclick="redirectToGitHub('https://github.com/cryptoclown132')">jkroger</button>
+</div>
+
+<script>
+    function redirectToGitHub(link) {
+        window.location.href = link;
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Readme</title>
+
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-image: url('futuristic-city-of-cyberpunk-artwork-hd-w3f6sbb8i3y4jbie.jpeg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden; /* Hide horizontal scrollbar */
+            position: relative;
+        }
+
+        /* Hacking effect pseudo-elements */
+        body::before,
+        body::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 20px; /* Increased width for more visibility */
+            background: linear-gradient(to right, transparent, #00ff00, transparent); /* Green glitchy effect */
+        }
+
+        body::before {
+            left: 0;
+        }
+
+        body::after {
+            right: 0;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 15px 30px; /* Increased padding for a larger button */
+            border: none;
+            border-radius: 8px; /* Increased border radius for a rounded appearance */
+            cursor: pointer;
+            margin: 15px; /* Increased margin for better spacing */
+            font-size: 28px; /* Increased font size for better visibility */
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .textBox {
+            max-width: 800px; /* Increased max-width for a larger text box */
+            margin: auto; /* Centered the text box horizontally */
+            padding: 30px; /* Increased padding for a larger text box */
+            background-color: #2c3e50; /* Cyberpunkish color */
+            border-radius: 15px; /* Increased border radius for a rounded appearance */
+            font-size: 20px; /* Increased font size for better readability */
+            color: #fff;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Adjusted box shadow for a subtle effect */
+        }
+
+        .textBox.active {
+            display: block;
+        }
+
+        .red-text {
+            color: #ff0000; /* Red color */
+        }
+
+        .green-text {
+            color: #00ff00; /* Green color */
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="location.href='index.html'">Main Page</button>
+
+<div class="textBox active" id="textBox1">
+    <p>How to use this Webserv:<br>
+
+        <br><span class="green-text">"File Upload"</span> will direct you to the page where you can upload files. Simply choose
+        a file by pressing <span class="red-text">"Choose a file"</span>, and upon making your selection, upload the file by
+        pressing <span class="red-text">"Upload File"</span> button.<br>
+
+        <br>If you wish to view all the files that you have uploaded, simply press the <span class="red-text">
+        "Uploaded picture files"</span> button, and you will be redirected to the page where all your files are
+        displayed.<br>
+
+        <br><span class="green-text">"Cookie Test"</span> will direct you to the page where you can verify that the bonus of the
+        subject is working. Simply press the <span class="red-text">"Save Client IP"</span> button, and you will
+        create a cookie.<br>
+
+        <br><span class="green-text">"Cgi Test"</span> will direct you to the page where you can test the CGI scripts. Simply
+        enter your name in the text box and press <span class="red-text">"Submit"</span> button. You will be
+        redirected to the page where you can see the result of the CGI script.<br>
+
+        <br><span class="green-text">"Creators"</span> will direct you to the page where you can find the intra names of the creators
+        and their GitHub links.<br>
+
+        <br><span class="green-text">"Readme"</span> button is self-explanatory, and you are already using it, so stop wasting your
+        time and get to testing!<br>
+
+        <!-- Add content as needed -->
+    </p>
+</div>
+
+<script>
+    let currentTextBox = 1;
+
+    function changeTextBox(direction) {
+        const textBoxes = document.querySelectorAll('.textBox');
+        textBoxes[currentTextBox - 1].classList.remove('active');
+        currentTextBox = (currentTextBox + direction - 1 + textBoxes.length) % textBoxes.length + 1;
+        textBoxes[currentTextBox - 1].classList.add('active');
+    }
+</script>
+
+</body>
+</html>

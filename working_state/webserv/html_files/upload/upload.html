@@ -57,6 +57,8 @@
 
 <!--</body>-->
 <!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -66,22 +68,49 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-image: url('futuristic_cyberpunk_library_by_misconceptionaiart_dfxo50y-pre.jpeg');
+            background-size: 100% 500%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #111;
             margin: 20px;
         }
+
+        .transparent-box {
+            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
+            padding: 10px;
+            border-radius: 10px;
+            overflow-y: auto; /* Add a scrollbar when content exceeds the box height */
+            max-height: 300px; /* Adjust the max height based on your preference */
+        }
+
+        #imageViewerTitle {
+            margin-bottom: 20px;
+        }
+
         #imageList {
             list-style-type: none;
             padding: 0;
         }
+
         #imageList li {
             margin-bottom: 10px;
+        }
+
+        a {
+            color: #fff;
         }
     </style>
 </head>
 <body>
 
-<h1>Image Viewer</h1>
+<div class="transparent-box" id="imageViewerTitle">
+    <h1><a>Image Viewer</a></h1>
+</div>
 
-<ul id="imageList"></ul>
+<div class="transparent-box" id="imageListContainer">
+    <ul id="imageList"></ul>
+</div>
 
 <script>
     // Fetch image filenames using XMLHttpRequest
