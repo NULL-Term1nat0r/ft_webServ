@@ -29,17 +29,18 @@
 #include "request.hpp"
 
 
-class getRequest : public request{
+class getRequest {
 private:
 	std::string filePath;
 public:
-	explicit getRequest(std::vector<uint8_t> &getRequest, serverConf &serverConfig, int serverIndex);
+	explicit getRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~getRequest();
 
 	class getRequestInvalidFileException : public std::exception
 	{
 		virtual const char *what() const throw();
 	};
+	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 	bool redirection;

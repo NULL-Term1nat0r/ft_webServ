@@ -12,7 +12,7 @@ class response
 private:
 
 public:
-	response(std::string filePath, int statusCode);
+	response(std::string filePath, int statusCode, serverConf &serverConf);
 	~response();
 	response &operator=(const response &other);
 
@@ -23,6 +23,8 @@ public:
 
 	std::string url;
 	std::string filePath;
+
+	serverConf &serverConfig;
 
 	int statusCode;
 

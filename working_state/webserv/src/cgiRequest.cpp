@@ -15,7 +15,7 @@
 bool cgiRequest::_errorSignal = false;
 
 
-cgiRequest::cgiRequest(std::vector<uint8_t> &requestContainer, serverConf &serverConfig, int serverIndex) : request(requestContainer, serverConfig, serverIndex), _serverConfig(serverConfig), serverIndex(serverIndex) {
+cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
 	_cgiPath = "";
 	_query = "";
 	_errorCode = 200;		// set to 200 for no error. or 201
@@ -62,7 +62,7 @@ bool cgiRequest::createTemporaryFile(){
 }
 
 bool cgiRequest::cgiValidExtension(std::string url) {
-	std::cout << "url: " << url << std::endl;
+//	std::cout << "url: " << url << std::endl;
 
 	size_t pos = url.find("?");
 	if (pos != std::string::npos) {
@@ -91,7 +91,7 @@ bool cgiRequest::cgiValidExtension(std::string url) {
 bool cgiRequest::executeCgi() {
 	std::cout << "cgi request incoming\n";
 
-	if (!cgiValidExtension(getStringURL())){
+	if (!cgiValidExtension(_baseRequest->getStringURL())){
 		_returnFilePath =  parsing::getErrorPagePath(500);
 		return false;
 	}

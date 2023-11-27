@@ -17,61 +17,61 @@
 
 
 class request {
-	private:
-		bool _validRequest;
+private:
+	bool _validRequest;
 
-		bool _get;
-		bool _post;
-		bool _delete;
-		bool _URL;
-		bool _cgi;
-		bool _httpProtocol;
+	bool _get;
+	bool _post;
+	bool _delete;
+	bool _URL;
+	bool _cgi;
+	bool _httpProtocol;
 
-		bool _aliveConnection;
-		bool _closeConnection;
+	bool _aliveConnection;
+	bool _closeConnection;
 
-		serverConf &_serverConfig;
-		int _serverIndex;
+	serverConf &_serverConfig;
+	int _serverIndex;
 
-		std::string _stringURL;
-		std::string _stringHttpProtocol;
+	std::string _stringURL;
+	std::string _stringHttpProtocol;
 
-		std::string _request;
-		std::string filePath;
-
-
-	public:
-		explicit request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, int serverIndex);
-		virtual ~request();
-
-		bool getValidRequest();
+	std::string _request;
+	std::string filePath;
 
 
-		bool getGetMethod();
-		bool getPostMethod();
-		bool getDeleteMethod();
-		bool getCgi();
-		bool getURL();
+public:
+	explicit request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, int serverIndex);
+	virtual ~request();
 
-		bool getAliveConnection();
-		bool getCloseConnection();
+	bool getValidRequest();
 
-		std::string getStringURL();
-		std::string getReferer();
-		std::string &getRequestString();
-		bool getCgiMethod();
-		static bool checkPageMethod(std::string method, std::string url, int serverIndex, serverConf &serverConfig);
-		void checkMethods();
-		static std::string getMethodString(request &request);
-		void parseURL();
 
-		bool checkCgi(std::string url);
+	bool getGetMethod();
+	bool getPostMethod();
+	bool getDeleteMethod();
+	bool getCgi();
+	bool getURL();
 
-		void setDefaultValues();
-		void parseRequest();
+	bool getAliveConnection();
+	bool getCloseConnection();
 
-		void validateRequest();
-		void printRequest();
+	std::string getStringURL();
+	std::string getReferer();
+	std::string &getRequestString();
+	bool getCgiMethod();
+	static bool checkPageMethod(std::string method, std::string url, int serverIndex, serverConf &serverConfig);
+	void checkMethods();
+	std::string getMethodString();
+	void parseURL();
+
+	bool checkCgi(std::string url);
+
+	void setDefaultValues();
+	void parseRequest();
+
+	void validateRequest();
+	void printRequest();
 };
 
 #endif

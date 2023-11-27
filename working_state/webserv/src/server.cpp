@@ -59,6 +59,7 @@ void server::addSocket(int clientSocket) {
 	struct pollfd _pollfd;
 	_pollfd.fd = clientSocket;
 	_pollfd.events = POLLIN;
+	fcntl(_pollfd.fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	pollEvents.push_back(_pollfd);
 	client newClient(clientSocket, serverConfig, serverIndex);
 	clients.push_back(newClient);
@@ -97,14 +98,15 @@ void server::handleNewConnection() {
 	socklen_t clientAddressSize = sizeof(clientAddress);
 
 	clientSocket = accept(serverSocket, (struct sockaddr *)&clientAddress, &clientAddressSize);
-	if (clientSocket < 0)
+	if (clientSocket < 0) {
 		throw std::runtime_error("Socket accept failed");
+	}
 
 //	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 	addSocket(clientSocket);
 }
 
-void server::serverRoutine(){
+void server::serverRoutine() {
 
 	int num_ready = poll(&this->pollEvents[0], this->pollEvents.size(), 0);
 	if (num_ready < 0) {
@@ -114,29 +116,30 @@ void server::serverRoutine(){
 	for (size_t i = 0; i < this->pollEvents.size(); ++i) {
 		if (this->pollEvents[i].revents == POLLIN) {
 			if (this->pollEvents[i].fd == this->serverSocket) {
-				std::cout << "new connection incoming" << std::endl;
+//				std::cout << "new connection incoming" << std::endl;
 				handleNewConnection();
-			}
-			else {
+//				std::cout << "new connection accepted" << std::endl;
+			} else {
 				clients[i].executeClientRequest();
 			}
 		}
 		if (pollEvents[i].revents == 0 && clients[i].clientResponse != NULL) {
 			clients[i].executeClientResponse();
+//			if (clients[i].clientResponse->_allChunkSent) {
+//				removeSocket(static_cast<int>(i));
+//			}
 		}
 //		std::cout << "if (time: " << time(NULL) << "- socketTimeouts[" << i << "]: " << socketTimeouts[i] << " > serv._clienttimeout: " << serv._clientTimeout << std::endl;
 		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {
 			if (clients[i].clientSocket != serverSocket) {
-				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
-				std::cout << "client: " << i << " timed out" << std::endl;
+//				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
+//				std::cout << "client: " << i << " timed out" << std::endl;
 				removeSocket(static_cast<int>(i));
 			}
 
 		}
 	}
 }
-
-#include <signal.h>
 
 bool server::exitServer = false;
 
@@ -165,20 +168,24 @@ void server::runAllServers(char *configFilePath) {
 			servers.push_back(serverClass);
 		}
 		catch (std::exception &e){
-			std::cout << "caught exception of server" << std::endl;
+			std::cout << "caught exception of server" << e.what() <<  std::endl;
 		}
 	}
 
 	getSignals();
-	while (!exitServer) {
-//		for (int i = 0; i < servers.size(); i++){
-		for (int i = 0; static_cast<size_t>(i) < servers.size(); i++){
-//			std::cout << "rewrite for upload: " << servers[i]->serverConfig._server[0].locations["/random"].rewrite << std::endl;
-			servers[i]->serverRoutine();
-		}
-	}
-	for (size_t i = 0; i < servers.size(); i++) {
-		delete servers[i];
+//	while (!exitServer) {
+////		for (int i = 0; i < servers.size(); i++){
+//		for (int i = 0; static_cast<size_t>(i) < servers.size(); i++){
+////			std::cout << "rewrite for upload: " << servers[i]->serverConfig._server[0].locations["/random"].rewrite << std::endl;
+//			servers[i]->serverRoutine();
+//		}
+//	}
+//	for (size_t i = 0; i < servers.size(); i++) {
+//		delete servers[i];
+//	}
+	while (!exitServer)
+	{
+		servers[0]->serverRoutine();
 	}
 }
 

@@ -50,16 +50,17 @@ class server {
 				bool checkDeleteRequest();
 				bool checkCgiRequest();
 
-				void createNewGetRequest(std::vector<uint8_t> _request, request &newRequest);
-				void createNewPostRequest(std::vector<uint8_t> _request, request &newRequest);
-				void createNewDeleteRequest(std::vector<uint8_t> _request, request &newRequest);
-				void createNewCgiRequest(std::vector<uint8_t> _request, request &newRequest);
+				void createNewGetRequest();
+				void createNewPostRequest();
+				void createNewDeleteRequest();
+				void createNewCgiRequest();
 
 
 				int clientSocket;
 				serverConf &serverConfig;
 				int serverIndex;
 				time_t lastActivity;
+				request *baseRequest;
 				getRequest *clientGetRequest;
 				postRequest *clientPostRequest;
 				deleteRequest *clientDeleteRequest;

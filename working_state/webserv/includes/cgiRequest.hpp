@@ -16,9 +16,9 @@
 #include "Header.h"
 #include "request.hpp"
 
-class cgiRequest : public request {
+class cgiRequest {
 private:
-
+	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 	std::string _cgiPath;
@@ -37,7 +37,7 @@ private:
 	bool _alarmSignal;	// boolean to check if alarm was activated.
 
 public:
-	explicit cgiRequest(std::vector<uint8_t> &requestContainer, serverConf &serverConfig, int serverIndex);
+	explicit cgiRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~cgiRequest();
 	static bool _errorSignal;
 	bool cgiCheckLanguage() const;

@@ -1,7 +1,7 @@
 
 #include "../includes/serverConf.hpp"
 
-LocationStruc::LocationStruc() : allowGet(false), allowPost(false), allowDelete(false), rewrite(""), autoindex(""), root(""), index(""), cgi() {}
+LocationStruc::LocationStruc() : allowGet(false), allowPost(false), allowDelete(false), rewrite(""), autoindex(""), root(""), index(""), cgi(), indexBool(true) {}
 
 LocationStruc::~LocationStruc(){}
 
@@ -10,8 +10,41 @@ serverSettings::serverSettings() : locations(), port(0), serverName(""), errorPa
 
 serverSettings::~serverSettings() {}
 
+void serverConf::constructFileTypeContainer(){
+	fileTypeContainer["html"] = "text/html";
+	fileTypeContainer["css"] = "text/css";
+	fileTypeContainer["py"] = "text/html";
+	fileTypeContainer["php"] = "text/html";
+	fileTypeContainer["jpg"] = "image/jpeg";
+	fileTypeContainer["jpeg"] = "image/jpeg";
+	fileTypeContainer["png"] = "image/png";
+	fileTypeContainer["gif"] = "image/gif";
+	fileTypeContainer["svg"] = "image/svg+xml";
+	fileTypeContainer["ico"] = "image/x-icon";
+	fileTypeContainer["mp3"] = "audio/mpeg";
+	fileTypeContainer["mp4"] = "video/mp4";
+	fileTypeContainer["woff"] = "font/woff";
+	fileTypeContainer["woff2"] = "font/woff2";
+	fileTypeContainer["ttf"] = "font/ttf";
+	fileTypeContainer["otf"] = "font/otf";
+	fileTypeContainer["txt"] = "text/plain";
+	fileTypeContainer["pdf"] = "application/pdf";
+	fileTypeContainer["json"] = "application/json";
+	fileTypeContainer["xml"] = "application/xml";
+	fileTypeContainer["zip"] = "application/zip";
+	fileTypeContainer["tar"] = "application/x-tar";
+}
+
+std::string serverConf::getFileType(std::string filePath){
+	std::string extension = parsing::getFileExtension(filePath);
+	std::map<std::string, std::string>::iterator fileType = fileTypeContainer.find(extension);
+	if (fileType == fileTypeContainer.end())
+		return "text/plain";
+	return fileType->second;
+}
+
 void	serverConf::_setCgi(std::map<std::string, std::vector<std::string> > location, std::string locationName,serverSettings &conf) {
-	if (location.find("cgi") != location.end() && location["cgi"][0] != "") {
+	if (location.find("cgi") != location.end() && location["cgi"].size() > 0) {
 		for (size_t i = 0; i < location["cgi"].size(); i++) {
 			if (location["cgi"][i] != ".py" && location["cgi"][i] != ".php")
 				throw WrongCgiExtension();
@@ -21,7 +54,7 @@ void	serverConf::_setCgi(std::map<std::string, std::vector<std::string> > locati
 }
 
 void	serverConf::_setRewrite(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
-	if (location.find("rewrite") != location.end() && location["rewrite"][0] != "")
+	if (location.find("rewrite") != location.end() && location["rewrite"][0].size() > 0)
 		conf.locations[locationName].rewrite = location["rewrite"][0];
 }
 
@@ -44,17 +77,17 @@ void	serverConf::_setAllowMethods(std::map<std::string, std::vector<std::string>
 }
 
 void	serverConf::_setAutoIndex(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
-	if (location.find("autoindex") != location.end() && location["autoindex"][0] != "")
+	if (location.find("autoindex") != location.end() && location["autoindex"].size() > 0)
 		conf.locations[locationName].autoindex = location["autoindex"][0];
 }
 
 void	serverConf::_setRoot(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
-	if (location.find("root") != location.end() && location["root"][0] != "")
+	if (location.find("root") != location.end() && location["root"].size() > 0)
 		conf.locations[locationName].root = location["root"][0];
 }
 
 void	serverConf::_setIndex(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
-	if (location.find("index") != location.end() && location["index"][0] != "")
+	if (location.find("index") != location.end() && location["index"].size() > 0)
 		conf.locations[locationName].index = location["index"][0];
 }
 
@@ -96,10 +129,30 @@ void	serverConf::_checkDuplicatePorts() {
 	}
 }
 
+void	serverConf::_indexFileNotExisting(Config conf) {
+	std::string file;
+	int			fileDescriptor;
+	for (int i = 0; i < _server.size(); i++) {
+		for (std::map<std::string, LocationStruc>::iterator it = _server[i].locations.begin(); it != _server[i].locations.end(); it++) {
+			if (it->first != "/" && it->second.rewrite == "")
+				file = "html_files" + it->first + "/" + it->second.index;
+			else if (it->second.rewrite != "")
+				file = "html_files" + it->second.rewrite + "/" + it->second.index;
+			else
+				file = "html_files" + it->first + it->second.index;
+			fileDescriptor = open(file.c_str(), O_RDONLY);
+			if (fileDescriptor == -1 || it->second.index == "")
+				it->second.indexBool = false;
+			close(fileDescriptor);
+		}
+	}
+}
+
 void	serverConf::getServerConf(Config conf) {
 	_globalValues(conf);
 	_serverValues(conf);
 	_checkDuplicatePorts();
 	if (_server.empty())
 		throw WrongAmount();
+	_indexFileNotExisting(conf);
 }

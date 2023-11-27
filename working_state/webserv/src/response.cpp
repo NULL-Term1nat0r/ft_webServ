@@ -1,18 +1,12 @@
 
 #include "../includes/response.hpp"
 
-response::response(std::string filePath, int statusCode) {
-//	this->serverClass = serverClass;
-	this->filePath = filePath;
-	this->statusCode = statusCode;
-	this->startPosition = 0;
-	this->_dataSend = 0;
-	this->firstChunkSent = false;
-	this->_allChunkSent = false;
+response::response(std::string filePath, int statusCode, serverConf &serverConfig) : filePath(filePath), statusCode(statusCode), serverConfig(serverConfig), startPosition(0), _dataSend(0), firstChunkSent(false), _allChunkSent(false) {
 	if (statusCode == 619)
 		this->bodySize = 0;
 	else
 		this->bodySize = countFileSize(this->filePath);
+//	this->serverClass = serverClass;
 }
 
 response::~response(){}
@@ -62,7 +56,7 @@ std::string response::createDirectoryListingHtml(){
 std::string response::createFirstChunk(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
 
-	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;
+//	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;
 	
 	if (!file.is_open())
 		throw responseInvalidFileException();
@@ -75,8 +69,9 @@ std::string response::createFirstChunk(int chunkSize){
 	std::string _statusCode = ss.str();
 
 	header += "HTTP/1.1 " + _statusCode + " OK\r\n";
-	header += "Content-Type: " + parsing::getFileType(this->filePath) + "\r\n";
+	header += "Content-Type: " + serverConfig.getFileType(this->filePath) + "\r\n";
 	header += "Content-Length: " + std::to_string(countFileSize(this->filePath)) + "\r\n";
+	header += "Connection: close\r\n";
 	header += "\r\n";
 	body = readFileContent(chunkSize - header.length());
 	_dataSend = body.length();
@@ -86,7 +81,7 @@ std::string response::createFirstChunk(int chunkSize){
 
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
-	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
+//	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
 	if (!file.is_open()){
 		throw responseInvalidFileException();
 	}
@@ -106,7 +101,7 @@ std::string response::readFileContent(int chunkSize){
 
 long response::countFileSize(std::string filePath){
 	std::ifstream file(filePath.c_str(), std::ios::binary);
-	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
+//	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
 	if (!file.is_open())
 		throw responseInvalidFileException();
 	file.seekg(0, std::ios::end);
@@ -123,7 +118,7 @@ bool response::removeFile(const char* filepath) {
 }
 
 std::string response::generateDirectoryListing(std::string path) {
-	std::cout << "filePath in generate: " << path << std::endl;
+//	std::cout << "filePath in generate: " << path << std::endl;
 	DIR* dir = opendir(path.c_str());
 	std::string dirList;
 	if (dir != nullptr) {

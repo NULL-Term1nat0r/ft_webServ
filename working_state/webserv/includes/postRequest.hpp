@@ -29,9 +29,9 @@
 #include "request.hpp"
 
 
-class postRequest : public request{
+class postRequest {
 private:
-
+	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 
@@ -54,16 +54,15 @@ private:
 	bool					_firstChunkSent;
 
 public:
-	explicit postRequest(std::vector<uint8_t> &postRequest, serverConf &serverConfig, int serverIndex);
+	explicit postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~postRequest();
 
 	void parseBoundary(std::string &data);
 	void parseContentLength(std::string &data);
-	void parseFileName(std::vector<uint8_t> &data);
-	void parseDataType(std::string &data);
+	void parseDataType();
 	void parseCgi(std::string &data);
-	void parseFileName(std::string &data);
-	void parseFileType(std::string &data);
+	void parseFileName();
+	void parseFileType();
 
 	void writeBinaryToFile(std::vector<uint8_t> &data);
 	void parseFirstChunk(std::vector<uint8_t> &data);
@@ -79,7 +78,7 @@ public:
 
 
 
-		int checkPostrequest();
+	int checkPostrequest();
 
 	std::string getBoundary();
 	int getContentLength();

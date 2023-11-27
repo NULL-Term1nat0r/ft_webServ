@@ -13,22 +13,18 @@ parsing::~parsing()
 	std::cout << "parsing destructor called" << std::endl;
 }
 
-std::string parsing::vectorToString(const std::vector<uint8_t>& inputVector) {
+std::string parsing::vectorToString(const std::vector<uint8_t>& inputVector, int size) {
 	std::string result;
-	for (size_t i = 0; i < inputVector.size(); ++i) {
+	for (size_t i = 0; i < size; ++i) {
 		result += static_cast<char>(inputVector[i]);
 	}
 	return result;
 }
 
-std::string parsing::returnValue(std::string key, std::string source, std::string limiter){
-	size_t start = source.find(key);
-	size_t end = source.find(limiter, start + key.length());
-	if (key == "filename=\""){
-		if (source.find(key) == std::string::npos)
-			std::cout << "key not found" << std::endl;
-	}
-	return source.substr(start + key.length(), end - start - key.length());
+std::string parsing::returnValue(std::string search, std::string source, std::string delimeter){
+	int start = source.find(search) + search.length() + delimeter.length();
+	int end = source.find(delimeter, start);
+	return source.substr(start, end - start);
 }
 
 std::vector<uint8_t> parsing::unsignedCharToVector(unsigned char *data, size_t size){
@@ -79,10 +75,12 @@ std::vector<std::string> parsing::split(const std::string s, char delim) {
 }
 
 std::string parsing::returnPage(const std::string &url) {
-	if (url == "")
+	if (url == ""){
 		return "";
-	if (url == "/")				//if url is "/" return index.html
+	}
+	if (url == "/")	{
 		return "/";
+	}			//if url is "/" return index.html
 	std::vector<std::string> result = split(url, '/');
 	std::string path = "./html_files" + url;
 	if (folderExists(path)) {
@@ -97,55 +95,34 @@ std::string parsing::returnPage(const std::string &url) {
 	return "";
 }
 
-std::string parsing::getFileType(std::string filePath){
-	std::string extension = getFileExtension(filePath);
-	if (extension == "")
-		return "text/plain";
-	if (extension == "html")
-		return "text/html";
-	if (extension == "css")
-		return "text/css";
-	if (extension == "py")
-		return "text/html";
-	if (extension == "php")
-		return "text/html";
-	if (extension == "jpg")
-		return "image/jpeg";
-	if (extension == "jpeg")
-		return "image/jpeg";
-	if (extension == "png")
-		return "image/png";
-	if (extension == "gif")
-		return "image/gif";
-	if (extension == "svg")
-		return "image/svg+xml";
-	if (extension == "ico")
-		return "image/x-icon";
-	if (extension == "mp3")
-		return "audio/mpeg";
-	if (extension == "mp4")
-		return "video/mp4";
-	if (extension == "woff")
-		return "font/woff";
-	if (extension == "woff2")
-		return "font/woff2";
-	if (extension == "ttf")
-		return "font/ttf";
-    if (extension == "otf")
-		return "font/otf";
-	if (extension == "txt")
-		return "text/plain";
-	if (extension == "pdf")
-		return "application/pdf";
-	if (extension == "json")
-		return "application/json";
-	if (extension == "xml")
-		return "application/xml";
-	if (extension == "zip")
-		return "application/zip";
-	if (extension == "tar")
-		return "application/x-tar";
-	return "";
+char parsing::decodeHex(char c) {
+	if (c >= '0' && c <= '9')
+		return c - '0';
+	else if (c >= 'A' && c <= 'F')
+		return c - 'A' + 10;
+	else if (c >= 'a' && c <= 'f')
+		return c - 'a' + 10;
+	else
+		return 0;
+}
+
+char parsing::decodePercentEncoding(const char* encoded) {
+	if (encoded[0] != '%' || !isxdigit(encoded[1]) || !isxdigit(encoded[2]))
+		return 0;
+	return (decodeHex(encoded[1]) << 4) + decodeHex(encoded[2]);
+}
+
+void parsing::decodeUrl(std::string &url) {
+	size_t pos = 0;
+	while ((pos = url.find('%', pos)) != std::string::npos) {
+		if (pos + 2 < url.length()) {
+			url = url.substr(0, pos) + decodePercentEncoding(url.substr(pos, 3).c_str()) + url.substr(pos + 3);
+			pos += 3;  // Move past the decoded part
+		} else {
+			// Handle the case where '%' is at the end of the string without enough characters to decode
+			break;
+		}
+	}
 }
 
 std::string parsing::getErrorPagePath(int errorCode){

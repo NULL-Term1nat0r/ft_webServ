@@ -3,6 +3,7 @@
 
 //#include "Header.h"
 #include "config.hpp"
+#include "parsing.hpp"
 // #include "request.hpp"
 // #include "postRequest.hpp"
 // #include "deleteRequest.hpp"
@@ -21,6 +22,7 @@ typedef struct LocationStruc
 	std::string					root;
 	std::string					index;
 	std::vector<std::string>	cgi;
+	bool						indexBool;
 } LocationStruc;
 
 typedef struct serverSettings
@@ -40,7 +42,10 @@ public:
 	serverConf();
 	serverConf(Config conf);
 	~serverConf();
+
 	void	getServerConf(Config conf);
+	std::string getFileType(std::string filePath);
+
 	class WrongPort : public std::exception
 	{
 	public:
@@ -74,7 +79,12 @@ public:
 	int							_buffSize;
 	int							_backlog; //how many cleints at the same time
 	std::vector<serverSettings>	_server;
+
+	std::map<std::string, std::string> fileTypeContainer;
+
 private:
+
+	void constructFileTypeContainer();
 	//*******************//
 	//*** server.cpp ***//
 	//*******************//
@@ -87,6 +97,7 @@ private:
 	void						_setLocationServerValues(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf, size_t i);
 	void						_setServerValues(std::map<std::string, std::map<std::string, std::vector<std::string> > > server, std::vector<std::string> locations);
 	void						_serverValues(Config conf);
+	void						_indexFileNotExisting(Config conf);
 	//*******************//
 	//*** server2.cpp ***//
 	//*******************//

@@ -12,8 +12,8 @@
 
 #include "../includes/deleteRequest.hpp"
 
-deleteRequest::deleteRequest(std::vector<uint8_t> &requestContainer, serverConf &serverConfig, int serverIndex) : request(requestContainer, serverConfig, serverIndex), _serverConfig(serverConfig), serverIndex(serverIndex){
-	deleteFile(getStringURL().c_str());
+deleteRequest::deleteRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex){
+	deleteFile(_baseRequest->getStringURL().c_str());
 }
 
 deleteRequest::~deleteRequest() {}

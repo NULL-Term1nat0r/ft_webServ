@@ -29,13 +29,14 @@
 #include "request.hpp"
 
 
-class deleteRequest : public request{
+class deleteRequest {
 private:
+	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 
 public:
-	explicit deleteRequest(std::vector<uint8_t> &requestContainer, serverConf &serverConfig, int serverIndex);
+	explicit deleteRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~deleteRequest();
 
 	class deleteRequestInvalidFileException : public std::exception
