@@ -1,7 +1,8 @@
 
 #include "../includes/response.hpp"
 
-response::response(std::string filePath, int statusCode, serverConf &serverConfig) : filePath(filePath), statusCode(statusCode), serverConfig(serverConfig), startPosition(0), _dataSend(0), firstChunkSent(false), _allChunkSent(false) {
+response::response(std::string responseFilePath, int statusCode, serverConf &serverConfig) : statusCode(statusCode), serverConfig(serverConfig), startPosition(0), _dataSend(0), firstChunkSent(false), _allChunkSent(false) {
+	filePath = responseFilePath;
 	if (statusCode == 619)
 		this->bodySize = 0;
 	else
@@ -82,7 +83,7 @@ std::string response::createFirstChunk(int chunkSize){
 
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
-//	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
+	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
 	if (!file.is_open()){
 		throw responseInvalidFileException();
 	}
@@ -102,7 +103,7 @@ std::string response::readFileContent(int chunkSize){
 
 long response::countFileSize(std::string filePath){
 	std::ifstream file(filePath.c_str(), std::ios::binary);
-//	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
+	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
 	if (!file.is_open())
 		throw responseInvalidFileException();
 	file.seekg(0, std::ios::end);

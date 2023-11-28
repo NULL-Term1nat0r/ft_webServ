@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: estruckm <estruckm@student.1337.ma>        +#+  +:+       +#+        */
+/*   By: jkroger <jkroger@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 15:13:02 by estruckm          #+#    #+#             */
-/*   Updated: 2023/11/06 15:13:02 by estruckm         ###   ########.fr       */
+/*   Updated: 2023/11/28 01:27:24 by jkroger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,14 +134,14 @@ void server::serverRoutine() {
 //			}
 		}
 //		std::cout << "if (time: " << time(NULL) << "- socketTimeouts[" << i << "]: " << socketTimeouts[i] << " > serv._clienttimeout: " << serv._clientTimeout << std::endl;
-		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {
-			if (clients[i].clientSocket != serverSocket) {
-//				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
-//				std::cout << "client: " << i << " timed out" << std::endl;
-				removeSocket(static_cast<int>(i));
-			}
+// 		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {
+// 			if (clients[i].clientSocket != serverSocket) {
+// //				std::cout << "actual time: " << time(NULL) << " - lastActivity: " << clients[i].lastActivity << " > serverConfig._clientTimeout: " << serverConfig._clientTimeout << std::endl;
+// //				std::cout << "client: " << i << " timed out" << std::endl;
+// 				removeSocket(static_cast<int>(i));
+// 			}
 
-		}
+// 		}
 	}
 }
 

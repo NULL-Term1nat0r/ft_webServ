@@ -31,7 +31,7 @@
 
 class getRequest {
 private:
-	std::string filePath;
+
 public:
 	explicit getRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~getRequest();
@@ -40,6 +40,9 @@ public:
 	{
 		virtual const char *what() const throw();
 	};
+
+	std::string filePath;
+
 	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
