@@ -78,7 +78,7 @@ class server {
 		int serverSocket;
 		int serverIndex;
 		std::vector<struct pollfd> pollEvents;
-		std::vector<client> clients;
+		std::vector<client*> clients;
 
 		std::vector<long long> clientTimeouts;
 		std::map<int, request*> clientRequests;

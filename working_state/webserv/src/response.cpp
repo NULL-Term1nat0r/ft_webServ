@@ -73,7 +73,7 @@ std::string response::createFirstChunk(int chunkSize){
 	header += "HTTP/1.1 " + _statusCode + " OK\r\n";
 	header += "Content-Type: " + serverConfig.getFileType(this->filePath) + "\r\n";
 	header += "Content-Length: " + std::to_string(countFileSize(this->filePath)) + "\r\n";
-	header += "Connection: close\r\n";
+	header += "Connection: keep-alive\r\n";
 	header += "\r\n";
 	body = readFileContent(chunkSize - header.length());
 	_dataSend = body.length();

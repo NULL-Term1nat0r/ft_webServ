@@ -27,7 +27,7 @@ server::~server() {
 		close(pollEvents[i].fd);
 	}
 	for (size_t i = 0; i < clients.size(); i++) {
-		clients[i].~client();
+		clients[i]->~client();
 	}
 
 	//close(serverSocket);
@@ -64,7 +64,7 @@ void server::addSocket(int clientSocket) {
 	_pollfd.events = POLLIN;
 	fcntl(_pollfd.fd, F_SETFL, O_NONBLOCK, FD_CLOEXEC);
 	pollEvents.push_back(_pollfd);
-	client newClient(clientSocket, serverConfig, serverIndex);
+	client *newClient = new client(clientSocket, serverConfig, serverIndex);
 	clients.push_back(newClient);
 	clientTimeouts.push_back(time(NULL));
 }
@@ -72,7 +72,7 @@ void server::addSocket(int clientSocket) {
 void server::removeSocket(int index) {
 	close(pollEvents[index].fd);
 	pollEvents.erase(pollEvents.begin() + index);
-	clients[index].~client();
+	clients[index]->~client();
 	clients.erase(clients.begin() + index);
 }
 
@@ -108,6 +108,7 @@ void server::handleNewConnection() {
 
 //	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 	addSocket(clientSocket);
+	std::cout << red << "new client got created\n" << reset << std::endl;
 }
 
 void server::serverRoutine() {
@@ -124,11 +125,11 @@ void server::serverRoutine() {
 				handleNewConnection();
 //				std::cout << "new connection accepted" << std::endl;
 			} else {
-				clients[i].executeClientRequest();
+				clients[i]->executeClientRequest();
 			}
 		}
-		if (pollEvents[i].revents == 0 && clients[i].clientResponse != NULL) {
-			clients[i].executeClientResponse();
+		if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) {
+			clients[i]->executeClientResponse();
 //			if (clients[i].clientResponse->_allChunkSent) {
 //				removeSocket(static_cast<int>(i));
 //			}

@@ -46,6 +46,10 @@ getRequest::~getRequest() {}
 //}
 
 std::string getRequest::createFilePath(){
+
+	std::cout << green << "url: " << _baseRequest->getStringURL() << reset << std::endl;
+	std::cout << green << "fileExists: " << "./html_files" + _baseRequest->getStringURL() << reset <<  std::endl;
+	std::cout << green << "boolean fileExists: " << parsing::fileExists(("./html_files" + _baseRequest->getStringURL()).c_str()) << reset <<  std::endl;
 	if (_baseRequest->getStringURL() == "/" && _serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].indexBool) {
 		std::cout << "indexBool: " << _serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].indexBool << std::endl;
 		if (_serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].autoindex == "on")
@@ -53,6 +57,7 @@ std::string getRequest::createFilePath(){
 		return parsing::getErrorPagePath(403);
 	}				//if url is "/" return index.html
 	else if (parsing::fileExists(("./html_files" + _baseRequest->getStringURL()).c_str())){
+		std::cout << green << "fileExists: " << "./html_files" + _baseRequest->getStringURL() << reset <<  std::endl;
 		return "./html_files" + _baseRequest->getStringURL();
 	}
 	else if (_serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].autoindex == "on" && _serverConfig._server[serverIndex].locations[_baseRequest->getStringURL()].indexBool){
