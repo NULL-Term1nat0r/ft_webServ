@@ -6,25 +6,29 @@
     <title>Cyberpunk CGI Example</title>
     <style>
         body {
+            font-family: 'Courier New', monospace;
             background-color: #0f0f0f;
             background-image: url(neon-car-in-cyberpunk-2077.jpeg);
             background-size: 100% 330%;
             background-position: center;
             background-repeat: no-repeat;
             color: #00ff00;
-            font-family: 'Courier New', monospace;
             margin: 0;
             padding: 20px;
             box-sizing: border-box;
         }
 
         h1, h2 {
-            color: #29b6f6;
+            color: #00ff00;
+        }
+
+        .container {
+            position: relative;
         }
 
         .transparent-box {
             max-width: 400px;
-            margin: 20px auto;
+            margin: 80px auto 20px; /* Adjusted margin for increased distance */
             padding: 20px;
             background-color: rgba(26, 26, 26, 0.8); /* Transparent background color */
             border: 1px solid #29b6f6;
@@ -48,29 +52,54 @@
 
         .script-box input[type="submit"] {
             cursor: pointer;
+            width: 100%;
             background-color: #29b6f6;
             color: #0f0f0f;
+        }
+
+        /* Style for the back-to-main-page button */
+        button#mainPageButton {
+            background-color: rgba(26, 26, 26, 0.8); /* Transparent background color */
+            color: #00ff00;
+            padding: 10px 20px;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            position: absolute;
+            top: -90px; /* Adjust the distance above the text boxes */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        button#mainPageButton:hover {
+            background-color: #29b6f6;
         }
     </style>
 </head>
 <body>
 
-<div class="transparent-box">
-    <h1>GET py</h1>
-    <h2>Enter your name:</h2>
-    <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">
-        <input type="text" name="name">
-        <input type="submit" value="Submit">
-    </form>
-</div>
+<div class="container">
+    <!-- Back to main page button -->
+    <button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>
 
-<div class="transparent-box">
-    <h1>GET php</h1>
-    <h2>Enter your name:</h2>
-    <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">
-        <input type="text" name="name">
-        <input type="submit" value="Submit">
-    </form>
+    <div class="transparent-box">
+        <h1>GET py</h1>
+        <h2>Enter your name:</h2>
+        <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">
+            <input type="text" name="name">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+
+    <div class="transparent-box">
+        <h1>GET php</h1>
+        <h2>Enter your name:</h2>
+        <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">
+            <input type="text" name="name">
+            <input type="submit" value="Submit">
+        </form>
+    </div>
 </div>
 
 </body>

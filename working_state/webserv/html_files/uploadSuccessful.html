@@ -3,47 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyberpunk File Upload</title>
+    <title>Upload Successful</title>
 
     <style>
         body {
-            font-family: 'Orbitron', sans-serif;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
             background-image: url('number-404-written-on-a-screen-upscaled.png');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #111;
-            color: #fff;
             text-align: center;
-            margin: 50px;
+            height: 100vh;
+            overflow: hidden; /* Hide horizontal scrollbar due to margin-left */
+            position: relative; /* Set the body as a positioning context for the absolute positioning of the transparent box */
         }
 
         h1 {
-            color: #3498db;
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 10px 20px; /* Reverted to the original size */
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            font-size: 36px; /* Increase font size */
+            color: #00ff00;
+            max-width:25%; /* Set the maximum width */
+            margin-left: auto; /* Center the element */
+            margin-right: auto; /* Center the element */
         }
 
         button {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
+            background-color: rgba(26, 26, 26, 0.8); /* Transparent background color */
+            color: #00ff00;
+            padding: 10px 20px; /* Reverted to the original size */
+            border: 1px solid #29b6f6;
             border-radius: 5px;
             cursor: pointer;
+            font-size: 24px; /* Reverted to the original size */
+            transition: background-color 0.3s ease-in-out; /* Add transition effect */
+            margin-top: 10px; /* Add margin top for spacing */
         }
 
         button:hover {
-            background-color: #c0392b;
+            background-color: #29b6f6;
         }
     </style>
 </head>
 <body>
 
-<h1>Upload successful</h1>
+<h1>Upload Successful</h1>
 
 <!-- Add a button to redirect to another page -->
-<a href="/index.html">
-    <button>Go to Another Page</button>
-</a>
+<button onclick="location.href='/index.html'">Go to Main Page</button>
 
 </body>
 </html>
