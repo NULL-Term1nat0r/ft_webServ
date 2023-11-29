@@ -76,9 +76,6 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 
 bool server::client::checkGetRequest() {
 	if (this->clientGetRequest != NULL) {
-		std::cout << "address of filePath in response: " << &this->clientResponse->filePath << std::endl;
-		std::cout << "statuscode: " << clientGetRequest->statusCode << std::endl;
-		std::cout << "statusCode address in requestfile: " << &clientGetRequest->statusCode << std::endl;
 		response *newResponse = new response(clientGetRequest->getFilePath(), clientGetRequest->statusCode, serverConfig);
 		clientResponse = newResponse;
 		delete this->baseRequest;
@@ -95,12 +92,13 @@ bool server::client::checkDeleteRequest() {
 		try {
 			clientDeleteRequest->deleteFile();
 			response *newResponse = new response("./html_files/deleteSuccessful.html", clientDeleteRequest->statusCode, serverConfig);
+			clientResponse = newResponse;
 		}
 		catch (std::exception &e) {
 			std::cout << "caught exception of delete Request" << std::endl;
+			response *newResponse = new response("./html_files/deleteFailed.html", clientDeleteRequest->statusCode, serverConfig);
+			clientResponse = newResponse;
 		}
-		response *newResponse = new response("./html_files/deleteFailed.html", clientDeleteRequest->statusCode, serverConfig);
-		clientResponse = newResponse;
 		delete this->baseRequest;
 		this->baseRequest = NULL;
 		delete clientDeleteRequest;
@@ -130,7 +128,7 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 	if (this->clientGetRequest == NULL && this->clientPostRequest == NULL && this->clientDeleteRequest == NULL && this->clientCgiRequest == NULL) {
 //		std::cout << "----------------------------------NEW-----REQUEST-------------------------------------------\n" << parsing::vectorToString(_request, 1500) <<std::endl;
 		this->baseRequest = new request(_request, serverConfig, serverIndex);
-		std::cout << this->baseRequest->getRequestString().substr(0, 100) << std::endl;
+//		std::cout << yellow << this->baseRequest->getRequestString().substr(0, 500) << reset << std::endl;
 
 		std::string method  = this->baseRequest->getMethodString();
 		if (method == "")
@@ -198,8 +196,6 @@ void server::client::createNewCgiRequest(){
 
 void server::client::executeClientResponse(){
 	if (this->clientResponse != NULL){
-		std::cout << "filePath in clientResponse: " << this->clientResponse->filePath << std::endl;
-		std::cout << "address filePath in response: " << &this->clientResponse->filePath << std::endl;
 		if (this->clientResponse->_allChunkSent && this->clientResponse->filePath.find("html_files/tmp_cgi.txt") != std::string::npos) {
 			if (!this->clientResponse->removeFile(this->clientResponse->filePath.c_str()))
 				std::cout << "file removed\n";
@@ -207,22 +203,21 @@ void server::client::executeClientResponse(){
 				std::cout << "file not removed\n";
 			delete this->clientResponse;
 			this->clientResponse = NULL;
-//			delete this->baseRequest;
-//			this->baseRequest = NULL;
-//			delete clientDeleteRequest;
-//			clientDeleteRequest = NULL;
 		}
 		else if (this->clientResponse->_allChunkSent) {
 			delete this->clientResponse;
 			this->clientResponse = NULL;
-//			delete this->baseRequest;
-//			this->baseRequest = NULL;
-//			delete clientDeleteRequest;
-//			clientDeleteRequest = NULL;
 		}
 		else {
-			std::string chunk = this->clientResponse->getChunk(serverConfig._buffSize);
-			send(this->clientSocket, &chunk[0], chunk.length(), 0);
+			try {
+				std::string chunk = this->clientResponse->getChunk(serverConfig._buffSize);
+//				usleep(1000);
+				if (send(this->clientSocket, &chunk[0], chunk.length(), 0) < 0)
+					throw std::runtime_error("send failed");
+			}
+			catch (std::exception &e) {
+				std::cout << "caught exception of clientResponse" << std::endl;
+			}
 		}
 	}
 }

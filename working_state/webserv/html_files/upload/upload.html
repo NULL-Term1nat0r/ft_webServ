@@ -117,9 +117,13 @@
         xhrDelete.setRequestHeader('Content-Type', 'application/json');
 
         xhrDelete.onload = function () {
-            if (xhrDelete.status >= 200 && xhrDelete.status < 400) {
+            if (xhrDelete.status == 204) {
                 window.location.href = '../deleteSuccessful.html';
-            } else {
+            }
+            else if (xhrDelete.status == 404) {
+                window.location.href = '../deleteFailed.html';
+            }
+            else {
                 console.error('Failed to delete file:', xhrDelete.responseText);
             }
         };

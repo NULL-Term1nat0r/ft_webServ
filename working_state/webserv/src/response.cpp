@@ -24,9 +24,8 @@ const char	*response::responseInvalidFileException::what() const throw() {
 }
 
 std::string response::getChunk(int chunkSize){
-
+	std::cout << "send chunk\n";
 	if (statusCode == 619){
-		std::cout << "createDirectoryListingHtml" << std::endl;
 		this->_allChunkSent = true;
 		return createDirectoryListingHtml();
 	}
@@ -41,14 +40,12 @@ std::string response::getChunk(int chunkSize){
 
 std::string response::createDirectoryListingHtml(){
 	std::string header;
-	std::cout << "constructed filePath in response\n";
 	std::string body = generateDirectoryListing(this->filePath);
 	std::stringstream ss;
 	ss << body.size();
 	std::string _bodySize = ss.str();
 	header += "HTTP/1.1 200 OK\r\n";
 	header += "Content-Type: text/html\r\n";
-	std::cout << blue << "bodySize: " << _bodySize << reset << std::endl;
 	header += "Content-Length: " + _bodySize + "\r\n";
 	header += "\r\n";
 	std::cout  << header + body << std::endl;
@@ -56,7 +53,6 @@ std::string response::createDirectoryListingHtml(){
 }
 
 std::string response::createFirstChunk(int chunkSize){
-	std::cout << "filePath in response: " << this->filePath << std::endl;
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
 
 //	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;
@@ -73,8 +69,11 @@ std::string response::createFirstChunk(int chunkSize){
 
 	header += "HTTP/1.1 " + _statusCode + " OK\r\n";
 	header += "Content-Type: " + serverConfig.getFileType(this->filePath) + "\r\n";
+	std::cout << blue << "ContentType: " << serverConfig.getFileType(this->filePath) << reset << std::endl;
 	header += "Content-Length: " + std::to_string(countFileSize(this->filePath)) + "\r\n";
-	std::cout << blue << "contentLength: " << std::to_string(countFileSize(this->filePath)) << reset << std::endl;
+	std::cout << blue << "ContentLength: " << countFileSize(this->filePath) << reset << std::endl;
+//	header += "Cache-Control: public, max-age=31536000\r\n";
+//	header += "ETag: unique-identifier\r\n";
 	header += "Connection: keep-alive\r\n";
 	header += "\r\n";
 	body = readFileContent(chunkSize - header.length());
@@ -85,7 +84,6 @@ std::string response::createFirstChunk(int chunkSize){
 
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
-	std::cout << "filePath in readFileContent: " << this->filePath << std::endl;
 	if (!file.is_open()){
 		throw responseInvalidFileException();
 	}
@@ -97,6 +95,7 @@ std::string response::readFileContent(int chunkSize){
 	delete[] buffer;
 	file.close();
 	_dataSend += result.length();
+	std::cout << "dataSend: " << _dataSend <<  "bodySize: " << bodySize << std::endl;
 	if (_dataSend >= bodySize){
 		std::cout << "all chunks in response send\n";
 		_allChunkSent = true;
@@ -106,7 +105,6 @@ std::string response::readFileContent(int chunkSize){
 
 long response::countFileSize(std::string filePath){
 	std::ifstream file(filePath.c_str(), std::ios::binary);
-	std::cout << "filePath in countFileSize: " << this->filePath << std::endl;
 	if (!file.is_open())
 		throw responseInvalidFileException();
 	file.seekg(0, std::ios::end);

@@ -43,7 +43,6 @@ bool serverConf::checkFileType(std::string fileExtension) {
 
 std::string serverConf::getFileType(std::string filePath){
 	std::string extension = parsing::getFileExtension(filePath);
-	std::cout << green << "extensionString: " << extension << reset << std::endl;
 	std::map<std::string, std::string>::iterator fileType = fileTypeContainer.find(extension);
 	if (fileType == fileTypeContainer.end())
 		return "text/plain";

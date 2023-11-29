@@ -66,6 +66,7 @@ public:
 	void parseFileName();
 	void parseFileType();
 	void parseFileExtension();
+	std::string parseValue(std::string search, std::string source, std::string delimeter);
 
 	void writeBinaryToFile(std::vector<uint8_t> &data);
 	void parseFirstChunk(std::vector<uint8_t> &data);

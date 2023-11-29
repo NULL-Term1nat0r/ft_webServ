@@ -23,6 +23,7 @@ const char	*deleteRequest::deleteRequestInvalidFileException::what() const throw
 }
 
 void deleteRequest::deleteFile(){
+
 	if (remove(("html_files" + _baseRequest->getStringURL()).c_str()) != 0) {
 		statusCode = 404;
 		throw deleteRequestInvalidFileException();

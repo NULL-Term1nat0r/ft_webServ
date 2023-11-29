@@ -15,14 +15,12 @@
 postRequest::postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
 	parseFileName();
 	parseFileExtension();
-//	parseDataType();
-//	parseFileType();
-	std::cout << "fileNamepost: " << _fileName << std::endl;
-	std::cout << "fileTypepost: " << _fileType << std::endl;
 	this->_firstChunkSent = false;
 	this->_allChunksSent = false;
-	this->_boundary = parsing::returnValue("boundary=", _baseRequest->getRequestString(), "\r");
+	this->_boundary = parseValue("boundary=", _baseRequest->getRequestString(), "\r");
+	std::cout << "boundary: " << this->_boundary << std::endl;
 	this->_contentLength = std::stoi(parsing::returnValue("Content-Length:", _baseRequest->getRequestString(), "\r"));
+	std::cout << "contentLength: " << this->_contentLength << std::endl;
 	this->_filePath = "./html_files/upload/" + this->_fileName;
 	this->_dataRecieved = 0;
 }
@@ -33,21 +31,6 @@ void postRequest::printPostRequest() {
 	std::cout << "allChunksSent: " << this->_allChunksSent << std::endl;
 	std::cout << "dataRecieved: " << this->_dataRecieved << std::endl;
 }
-
-//void postRequest::parseDataType() {
-//
-//	if (_baseRequest->getRequestString().find("Content-Type: multipart/form-data") != std::string::npos)
-//		this->_multiFormData = true;
-//	else if (_baseRequest->getRequestString().find("Content-Type: text/plain") != std::string::npos)
-//		this->_textData = true;
-//}
-
-//void postRequest::parseFileType() {
-//	size_t start = _baseRequest->getRequestString().find("Content-Type: ");
-//	start = _baseRequest->getRequestString().find("Content-Type: ", start + 1);
-//	size_t end = _baseRequest->getRequestString().find("\r", start + 14);
-//	this->_fileType = _baseRequest->getRequestString().substr(start + 14, end - start - 14);
-//}
 
 void postRequest::parseFileExtension() {
 	size_t start = _fileName.find_last_of('.');
@@ -68,16 +51,16 @@ void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 	if (_firstChunkSent && static_cast<size_t>(_contentLength - _dataRecieved) <= data.size() && !_allChunksSent){ //last chunk recieved
 		handleLastChunk(data);
 	}
-	std::cout << "chunk sent\n";
 	_firstChunkSent = true;
 	_dataRecieved += data.size();
 }
 
 void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
-	std::cout << "-------content length: " << _contentLength << std::endl;
-	size_t boundaryPos = _baseRequest->getRequestString().find(this->_fileType + "\r\n\r\n");
+	std::string fileType = _serverConfig.fileTypeContainer[_fileExtension];
+	size_t boundaryPos = _baseRequest->getRequestString().find(fileType + "\r\n\r\n");
 	if (boundaryPos != std::string::npos) {
-		boundaryPos += this->_fileType.length() + 4;
+		std::cout << "fileType: " << fileType << std::endl;
+		boundaryPos += fileType.length() + 4;
 	} else {
 		std::cout << "boundary not found" << std::endl;
 		throw postException();
@@ -114,7 +97,6 @@ void postRequest::handleMiddleChunk(std::vector<uint8_t> &data){
 
 void postRequest::handleLastChunk(std::vector<uint8_t> &data){
 	this->_allChunksSent = true;
-	std::cout << "last vhunk has been sent-------" << std::endl;
 	checkLastChunk(data, this->_boundary);
 	std::ofstream file(this->_filePath, std::ios::app | std::ios::binary);
 	if (file.is_open()){
@@ -141,7 +123,12 @@ void	postRequest::checkLastChunk(std::vector<uint8_t> &lastChunk, std::string st
 	std::vector<uint8_t>::iterator boundaryPos = findEndBoundary(lastChunk, boundary);
 	if (boundaryPos != lastChunk.end())
 		lastChunk.erase(boundaryPos, lastChunk.end());
+}
 
+std::string postRequest::parseValue(std::string search, std::string source, std::string delimeter){
+	int start = source.find(search) + search.length();
+	int end = source.find(delimeter, start);
+	return source.substr(start, end - start);
 }
 
 void postRequest::parseFileName(){

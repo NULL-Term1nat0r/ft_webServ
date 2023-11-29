@@ -81,8 +81,6 @@ getRequest::~getRequest() {}
 //}
 
 std::string getRequest::createFilePath(){
-	std::cout << "createFilePath activated\n";
-	std::cout << "url in createFilePath = " << _baseRequest->getStringURL() << std::endl;
 	std::string page = parsing::constructPage(_baseRequest->getStringURL());
 	if (checkRewrite(page)) {
 		std::cout << "check rewrite\n";
@@ -100,8 +98,6 @@ std::string getRequest::createFilePath(){
 	bool indexBool = _serverConfig._server[serverIndex].locations[page].indexBool;
 
 	if (parsing::folderExists("./html_files" + _baseRequest->getStringURL())) {
-		std::cout << "folderpath: " << "./html_files" + page << std::endl;
-		std::cout << "folder exists\n";
 		std::string autoIndex = _serverConfig._server[serverIndex].locations[page].autoindex;
 		if (autoIndex == "on" && indexBool){
 			if (page == "/")
@@ -120,8 +116,6 @@ std::string getRequest::createFilePath(){
 
 	}
 	else if (parsing::fileExists("./html_files" + _baseRequest->getStringURL())) {
-		std::cout << "filepath: " << "./html_files" + _baseRequest->getStringURL() << std::endl;
-		std::cout << "file exists\n";
 		std::string autoIndex = _serverConfig._server[serverIndex].locations[page].autoindex;
 		if (indexBool)
 			return "./html_files" + _baseRequest->getStringURL();
@@ -130,9 +124,7 @@ std::string getRequest::createFilePath(){
 			return "./html_files" + page;
 		}
 		else {
-			std::cout << "made my way hier: " << _baseRequest->getStringURL() << std::endl;
 			statusCode = 403;
-			std::cout << "statusCode address in requestfile: " << &statusCode << std::endl;
 			return parsing::getErrorPagePath(403);
 		}
 

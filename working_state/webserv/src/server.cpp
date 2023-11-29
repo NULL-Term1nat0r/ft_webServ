@@ -109,7 +109,7 @@ void server::handleNewConnection() {
 
 //	fcntl(clientSocket, F_SETFL, O_NONBLOCK);
 	addSocket(clientSocket);
-	std::cout << red << "new client got created\n" << reset << std::endl;
+//	std::cout << red << "new client got created\n" << reset << std::endl;
 }
 
 void server::serverRoutine() {
@@ -186,6 +186,7 @@ void server::runAllServers(char *configFilePath) {
 			servers[i]->serverRoutine();
 		}
 	}
+	sleep(1);
 	for (size_t i = 0; i < servers.size(); i++) {
 		delete servers[i];
 	}
