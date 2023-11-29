@@ -22,21 +22,28 @@ void serverConf::constructFileTypeContainer(){
 	fileTypeContainer["svg"] = "image/svg+xml";
 	fileTypeContainer["ico"] = "image/x-icon";
 	fileTypeContainer["mp3"] = "audio/mpeg";
-	fileTypeContainer["mp4"] = "video/mp4";
 	fileTypeContainer["woff"] = "font/woff";
 	fileTypeContainer["woff2"] = "font/woff2";
 	fileTypeContainer["ttf"] = "font/ttf";
 	fileTypeContainer["otf"] = "font/otf";
 	fileTypeContainer["txt"] = "text/plain";
 	fileTypeContainer["pdf"] = "application/pdf";
-	fileTypeContainer["json"] = "application/json";
 	fileTypeContainer["xml"] = "application/xml";
-	fileTypeContainer["zip"] = "application/zip";
 	fileTypeContainer["tar"] = "application/x-tar";
+	fileTypeContainer["xpm"] = "image/xpm";
 }
+
+bool serverConf::checkFileType(std::string fileExtension) {
+	if (fileTypeContainer.find(fileExtension) == fileTypeContainer.end())
+		return false;
+	return true;
+}
+
+
 
 std::string serverConf::getFileType(std::string filePath){
 	std::string extension = parsing::getFileExtension(filePath);
+	std::cout << green << "extensionString: " << extension << reset << std::endl;
 	std::map<std::string, std::string>::iterator fileType = fileTypeContainer.find(extension);
 	if (fileType == fileTypeContainer.end())
 		return "text/plain";

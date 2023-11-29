@@ -42,6 +42,7 @@ public:
 	};
 
 	std::string filePath;
+	int statusCode;
 
 	request *_baseRequest;
 	serverConf &_serverConfig;
@@ -49,7 +50,8 @@ public:
 	bool redirection;
 	bool autoIndexListing;
 
-	std::string checkRewrite(std::string url);
+	bool checkRewrite(std::string url);
+	std::string getRewrite(std::string url);
 	static bool fileExists(const char* filePath);
 	std::string createFilePath();
 

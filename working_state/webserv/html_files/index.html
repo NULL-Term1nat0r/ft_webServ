@@ -7,55 +7,73 @@
 
     <style>
         body {
-            font-family: 'Roboto', sans-serif; /* Change to a futuristic font */
-            background-image: url('Yoshito-Hasaka-ci-porta-in-un-universo-cyberpunk-alla-Blade-Runner-Collater.al-12.jpg');
+            background-image: url('resources/Yoshito-Hasaka-ci-porta-in-un-universo-cyberpunk-alla-Blade-Runner-Collater.al-12.jpg');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #111;
-            color: #fff;
             text-align: center;
             height: 100vh;
-            overflow: hidden; /* Hide horizontal scrollbar due to margin-left */
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
         }
 
         button {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px 20px; /* Reverted to the original size */
-            border: none;
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
             border-radius: 5px;
-            cursor: pointer;
             margin: 10px;
-            font-size: 24px; /* Reverted to the original size */
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color: #29b6f6;
         }
 
-        #randomMessages {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 90px; /* 2x as big */
-            opacity: 0; /* Start with zero opacity */
-            transition: opacity 1s ease-in-out; /* Apply transition effect */
-        }
-
-        /* Style for the invisible button */
         #easterEggButton {
+            font-family: 'Courier New', monospace;
             background: none;
             border: none;
             color: transparent;
             cursor: pointer;
             outline: none;
         }
-        .yellow-text {
-            color: #f1c40f;
+
+        #easterEggButton:hover {
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
         }
 
+        .transparent-box {
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 20px;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #randomMessages {
+            font-size: 90px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
     </style>
 </head>
 <body>
@@ -66,16 +84,17 @@
 <button onclick="location.href='creators.html'">Creators</button>
 <button onclick="location.href='readme.html'">Readme</button>
 
-<!-- Invisible button for the easter egg -->
 <button id="easterEggButton" onclick="loadEasterEgg()">Easter Egg</button>
 
-<div id="randomMessages"></div>
+<div class="transparent-box">
+    <div id="randomMessages"></div>
+</div>
 
 <script>
     const messages = [
         "Hello!",
         "Welcome to our webserv!",
-        "It's piece of shit, but it's our shit!",
+        "It's a piece of shit, but it's our shit!",
         "Head to 'Readme' for instructions!",
         "Should I call you mista?",
     ];
@@ -84,25 +103,21 @@
 
     function updateRandomMessage() {
         const randomMessagesElement = document.getElementById('randomMessages');
-        randomMessagesElement.style.opacity = 0; // Start fading out
+        randomMessagesElement.style.opacity = 0;
 
         setTimeout(() => {
             randomMessagesElement.textContent = messages[currentIndex];
-            randomMessagesElement.style.opacity = 1; // Start fading in
+            randomMessagesElement.style.opacity = 1;
 
-            currentIndex = (currentIndex + 1) % messages.length; // Move to the next message, cycle to the first if at the end
-        }, 1000); // Wait for 1 second before changing content
+            currentIndex = (currentIndex + 1) % messages.length;
+        }, 1000);
     }
 
-    // Initial message
     updateRandomMessage();
+    setInterval(updateRandomMessage, 6000);
 
-    // Change message every 5 seconds
-    setInterval(updateRandomMessage, 6000); // Increased interval to accommodate the fade effect
-
-    // Function to load the easter egg
     function loadEasterEgg() {
-        window.location.href = 'easterEgg.html'; // Replace with the actual file path
+        window.location.href = 'easterEgg.html';
     }
 </script>
 

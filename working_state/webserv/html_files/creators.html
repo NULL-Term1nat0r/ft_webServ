@@ -7,45 +7,44 @@
 
     <style>
         body {
-            font-family: 'Roboto', sans-serif;
-            background-image: url('img.png');
+            background-image: url('resources/img.png');
             background-size: 100% 100%;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #111;
-            color: #fff;
             text-align: center;
             height: 100vh;
-            overflow: hidden; /* Hide horizontal scrollbar */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
         }
 
         button {
-            background-color: #3498db;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 10px;
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
             font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
         }
 
         button:hover {
-            background-color: #2980b9;
+            background-color: #29b6f6;
         }
 
-        .github-buttons {
-            display: flex;
-            justify-content: center;
-            margin-top: auto; /* Move the buttons to the bottom */
-        }
-
-        .github-buttons button:not(:last-child) {
-            margin-right: 50px; /* Adjust the spacing between buttons */
+        h1 {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 48px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            padding: 10px 20px;
         }
     </style>
 </head>
@@ -54,6 +53,7 @@
 <button onclick="location.href='index.html'">Main Page</button>
 
 <div class="github-buttons">
+    <h1>Under top-g construction by: </h1>
     <button onclick="redirectToGitHub('https://github.com/Valsimot42')">tbolkova</button>
     <button onclick="redirectToGitHub('https://github.com/NULL-Term1nat0r')">estruckm</button>
     <button onclick="redirectToGitHub('https://github.com/cryptoclown132')">jkroger</button>

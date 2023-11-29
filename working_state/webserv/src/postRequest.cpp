@@ -14,11 +14,9 @@
 
 postRequest::postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
 	parseFileName();
-	std::cout << "test1\n";
-	parseDataType();
-	std::cout << "test2\n";
-	parseFileType();
-	std::cout << "test3\n";
+	parseFileExtension();
+//	parseDataType();
+//	parseFileType();
 	std::cout << "fileNamepost: " << _fileName << std::endl;
 	std::cout << "fileTypepost: " << _fileType << std::endl;
 	this->_firstChunkSent = false;
@@ -36,24 +34,27 @@ void postRequest::printPostRequest() {
 	std::cout << "dataRecieved: " << this->_dataRecieved << std::endl;
 }
 
-void postRequest::parseDataType() {
+//void postRequest::parseDataType() {
+//
+//	if (_baseRequest->getRequestString().find("Content-Type: multipart/form-data") != std::string::npos)
+//		this->_multiFormData = true;
+//	else if (_baseRequest->getRequestString().find("Content-Type: text/plain") != std::string::npos)
+//		this->_textData = true;
+//}
 
-	if (_baseRequest->getRequestString().find("Content-Type: multipart/form-data") != std::string::npos)
-		this->_multiFormData = true;
-	else if (_baseRequest->getRequestString().find("Content-Type: text/plain") != std::string::npos)
-		this->_textData = true;
-}
+//void postRequest::parseFileType() {
+//	size_t start = _baseRequest->getRequestString().find("Content-Type: ");
+//	start = _baseRequest->getRequestString().find("Content-Type: ", start + 1);
+//	size_t end = _baseRequest->getRequestString().find("\r", start + 14);
+//	this->_fileType = _baseRequest->getRequestString().substr(start + 14, end - start - 14);
+//}
 
-void postRequest::parseFileType() {
-	std::cout << "test11\n";
-	size_t start = _baseRequest->getRequestString().find("Content-Type: ");
-	std::cout << "test22\n";
-	start = _baseRequest->getRequestString().find("Content-Type: ", start + 1);
-	std::cout << "test33\n";
-	size_t end = _baseRequest->getRequestString().find("\r", start + 14);
-	std::cout << "test44\n";
-	this->_fileType = _baseRequest->getRequestString().substr(start + 14, end - start - 14);
-	std::cout << "test55\n";
+void postRequest::parseFileExtension() {
+	size_t start = _fileName.find_last_of('.');
+	if (start == std::string::npos)
+		this->_fileExtension = "not supported";
+	else
+		this->_fileExtension = _fileName.substr(start + 1);
 }
 
 void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
@@ -67,6 +68,7 @@ void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 	if (_firstChunkSent && static_cast<size_t>(_contentLength - _dataRecieved) <= data.size() && !_allChunksSent){ //last chunk recieved
 		handleLastChunk(data);
 	}
+	std::cout << "chunk sent\n";
 	_firstChunkSent = true;
 	_dataRecieved += data.size();
 }
@@ -143,10 +145,9 @@ void	postRequest::checkLastChunk(std::vector<uint8_t> &lastChunk, std::string st
 }
 
 void postRequest::parseFileName(){
-	std::string request = _baseRequest->getRequestString();
-	int start = request.find("filename=\"") + 10;
-	int end = request.find("\"", start);
-	this->_fileName = request.substr(start, end - start);
+	int start = _baseRequest->getRequestString().find("filename=\"") + 10;
+	int end = _baseRequest->getRequestString().find("\"", start);
+	this->_fileName = _baseRequest->getRequestString().substr(start, end - start);
 	std::cout << "fileName: " << _fileName << std::endl;
 }
 
@@ -170,7 +171,15 @@ bool postRequest::getAllChunksSent() {
 	return this->_allChunksSent;
 }
 
+std::string postRequest::getFileType() {
+	return this->_fileType;
+}
+
 const char	*postRequest::postException::what() const throw() {
 	return "postException has accured\n";
+}
+
+std::string postRequest::getFileExtension() {
+	return this->_fileExtension;
 }
 

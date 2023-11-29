@@ -41,6 +41,7 @@ public:
 	explicit cgiRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~cgiRequest();
 	static bool _errorSignal;
+	int statusCode;
 	bool cgiCheckLanguage() const;
 	bool checkExtensionServerConfig(std::string extension);
 	bool cgiValidExtension(std::string url);

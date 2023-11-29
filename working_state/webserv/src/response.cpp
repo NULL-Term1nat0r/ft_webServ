@@ -48,6 +48,7 @@ std::string response::createDirectoryListingHtml(){
 	std::string _bodySize = ss.str();
 	header += "HTTP/1.1 200 OK\r\n";
 	header += "Content-Type: text/html\r\n";
+	std::cout << blue << "bodySize: " << _bodySize << reset << std::endl;
 	header += "Content-Length: " + _bodySize + "\r\n";
 	header += "\r\n";
 	std::cout  << header + body << std::endl;
@@ -73,6 +74,7 @@ std::string response::createFirstChunk(int chunkSize){
 	header += "HTTP/1.1 " + _statusCode + " OK\r\n";
 	header += "Content-Type: " + serverConfig.getFileType(this->filePath) + "\r\n";
 	header += "Content-Length: " + std::to_string(countFileSize(this->filePath)) + "\r\n";
+	std::cout << blue << "contentLength: " << std::to_string(countFileSize(this->filePath)) << reset << std::endl;
 	header += "Connection: keep-alive\r\n";
 	header += "\r\n";
 	body = readFileContent(chunkSize - header.length());
@@ -96,6 +98,7 @@ std::string response::readFileContent(int chunkSize){
 	file.close();
 	_dataSend += result.length();
 	if (_dataSend >= bodySize){
+		std::cout << "all chunks in response send\n";
 		_allChunkSent = true;
 	}
 	return result;

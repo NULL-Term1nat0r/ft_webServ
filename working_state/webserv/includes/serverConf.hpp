@@ -45,6 +45,8 @@ public:
 
 	void	getServerConf(Config conf);
 	std::string getFileType(std::string filePath);
+	bool checkFileType(std::string fileExtension);
+	void constructFileTypeContainer();
 
 	class WrongPort : public std::exception
 	{
@@ -83,8 +85,6 @@ public:
 	std::map<std::string, std::string> fileTypeContainer;
 
 private:
-
-	void constructFileTypeContainer();
 	//*******************//
 	//*** server.cpp ***//
 	//*******************//

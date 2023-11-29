@@ -63,7 +63,6 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 			if (clientPostRequest->getAllChunksSent()) {
 				response *newResponse = new response("./html_files/uploadSuccessful.html", 201, serverConfig);
 				clientResponse = newResponse;
-				clientResponse = newResponse;
 				delete this->baseRequest;
 				this->baseRequest = NULL;
 				delete clientPostRequest;
@@ -77,35 +76,30 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 
 bool server::client::checkGetRequest() {
 	if (this->clientGetRequest != NULL) {
-//		std::cout << "filePath: " << clientGetRequest->getFilePath() << std::endl;
-		if (this->clientGetRequest->autoIndexListing) {
-			std::cout << "response for 619 got created\n";
-			response *newResponse = new response(this->clientGetRequest->getFilePath(), 619, serverConfig);
-			clientResponse = newResponse;
-			delete this->baseRequest;
-			this->baseRequest = NULL;
-			delete clientGetRequest;
-			clientGetRequest = NULL;
-			return true;
-		}
-		else {
-			std::cout << "address of filePath in response: " << &this->clientResponse->filePath << std::endl;
-			response *newResponse = new response(clientGetRequest->getFilePath(), 200, serverConfig);
-			clientResponse = newResponse;
-			clientResponse = newResponse;
-			delete this->baseRequest;
-			this->baseRequest = NULL;
-			delete clientGetRequest;
-			clientGetRequest = NULL;
-			return true;
-		}
+		std::cout << "address of filePath in response: " << &this->clientResponse->filePath << std::endl;
+		std::cout << "statuscode: " << clientGetRequest->statusCode << std::endl;
+		std::cout << "statusCode address in requestfile: " << &clientGetRequest->statusCode << std::endl;
+		response *newResponse = new response(clientGetRequest->getFilePath(), clientGetRequest->statusCode, serverConfig);
+		clientResponse = newResponse;
+		delete this->baseRequest;
+		this->baseRequest = NULL;
+		delete clientGetRequest;
+		clientGetRequest = NULL;
+		return true;
 	}
 	return false;
 }
 
 bool server::client::checkDeleteRequest() {
 	if (this->clientDeleteRequest != NULL) {
-		response *newResponse = new response("./html_files/deleteSuccessful.html", 200, serverConfig);
+		try {
+			clientDeleteRequest->deleteFile();
+			response *newResponse = new response("./html_files/deleteSuccessful.html", clientDeleteRequest->statusCode, serverConfig);
+		}
+		catch (std::exception &e) {
+			std::cout << "caught exception of delete Request" << std::endl;
+		}
+		response *newResponse = new response("./html_files/deleteFailed.html", clientDeleteRequest->statusCode, serverConfig);
 		clientResponse = newResponse;
 		delete this->baseRequest;
 		this->baseRequest = NULL;
@@ -120,7 +114,7 @@ bool server::client::checkCgiRequest() {
 	if (this->clientCgiRequest != NULL) {
 		std::cout << "cgi filePath: " << clientCgiRequest->getFilePath() << std::endl;
 		clientCgiRequest->executeCgi();
-		response *newResponse = new response(clientCgiRequest->getFilePath(), 200, serverConfig);
+		response *newResponse = new response(clientCgiRequest->getFilePath(), clientCgiRequest->statusCode, serverConfig);
 		clientResponse = newResponse;
 		delete this->baseRequest;
 		this->baseRequest = NULL;
@@ -131,40 +125,12 @@ bool server::client::checkCgiRequest() {
 	return false;
 }
 
-//void server::client::createNewRequest(std::vector<uint8_t> _request){
-//
-//	if (this->clientGetRequest == NULL && this->clientPostRequest == NULL && this->clientDeleteRequest == NULL && this->clientCgiRequest == NULL) {
-//		request newRequest = request(_request, serverConfig, serverIndex);
-//		std::cout << parsing::vectorToString(_request) << std::endl;
-//		std::cout << "get cgi method: " << newRequest.getCgi() << std::endl;
-//		if (newRequest.getGetMethod() && newRequest.getCgi()) {
-//			std::cout << "create new CgiRequest\n";
-//			cgiRequest *newCgiRequest = new cgiRequest(_request, serverConfig, serverIndex);
-//			this->clientCgiRequest = newCgiRequest;
-//		}
-//		else if (newRequest.getPostMethod()){
-//			std::cout << "create new PostRequest\n";
-//			postRequest *newPostRequest = new postRequest(_request, serverConfig, serverIndex);
-//			this->clientPostRequest= newPostRequest;
-//		}
-//		else if (newRequest.getGetMethod()){
-//			std::cout << "create new GetRequest\n";
-//			getRequest *newGetRequest = new getRequest(_request, serverConfig, serverIndex);
-//			this->clientGetRequest = newGetRequest;
-//		}
-//		else if (newRequest.getDeleteMethod()){
-//			deleteRequest *newDeleteRequest = new deleteRequest(_request, serverConfig, serverIndex);
-//			this->clientDeleteRequest = newDeleteRequest;
-//		}
-//	}
-//}
-
 void server::client::createNewRequest(std::vector<uint8_t> _request){
 
 	if (this->clientGetRequest == NULL && this->clientPostRequest == NULL && this->clientDeleteRequest == NULL && this->clientCgiRequest == NULL) {
 //		std::cout << "----------------------------------NEW-----REQUEST-------------------------------------------\n" << parsing::vectorToString(_request, 1500) <<std::endl;
 		this->baseRequest = new request(_request, serverConfig, serverIndex);
-		std::cout << "url: " << this->baseRequest->getRequestString() << std::endl;
+		std::cout << this->baseRequest->getRequestString().substr(0, 100) << std::endl;
 
 		std::string method  = this->baseRequest->getMethodString();
 		if (method == "")
@@ -197,9 +163,28 @@ void server::client::createNewGetRequest(){
 void server::client::createNewPostRequest(){
 
 	this->clientPostRequest = new postRequest(baseRequest, serverConfig, serverIndex);
+
 	if (this->clientPostRequest->getContentLength() > serverConfig._server[serverIndex].bodySize) {
+		invalidRequest = true;
+		std::cout << "contentLength: " << this->clientPostRequest->getContentLength() << std::endl;
+		std::cout << "bodySize: " << serverConfig._server[serverIndex].bodySize << std::endl;
+		std::cout << "file too big " << std::endl;
 		response *newResponse = new response("./html_files/errorPages/error413.html", 413, serverConfig);
 		clientResponse = newResponse;
+		delete this->baseRequest;
+		this->baseRequest = NULL;
+		delete clientPostRequest;
+		clientPostRequest = NULL;
+	}
+	else if (!serverConfig.checkFileType(this->clientPostRequest->getFileExtension())) {
+		std::cout << "fileExtension: " << this->clientPostRequest->getFileExtension() << std::endl;
+		invalidRequest = true;
+		response *newResponse = new response("./html_files/errorPages/error415.html", 415, serverConfig);
+		clientResponse = newResponse;
+		delete this->baseRequest;
+		this->baseRequest = NULL;
+		delete clientPostRequest;
+		clientPostRequest = NULL;
 	}
 }
 

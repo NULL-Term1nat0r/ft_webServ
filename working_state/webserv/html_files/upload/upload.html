@@ -1,140 +1,178 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Image Viewer</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            font-family: Arial, sans-serif;-->
-<!--            margin: 20px;-->
-<!--        }-->
-<!--        #imageContainer {-->
-<!--            max-height: 400px;-->
-<!--            overflow-y: auto;-->
-<!--            border: 1px solid #ccc;-->
-<!--            padding: 10px;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<h1>Image Viewer</h1>-->
-
-<!--<div id="imageContainer"></div>-->
-
-<!--<script>-->
-<!--    // Fetch image filenames using XMLHttpRequest-->
-<!--    var xhr = new XMLHttpRequest();-->
-<!--    xhr.open('GET', './upload/getImages.php', true);-->
-
-<!--    xhr.onload = function () {-->
-<!--        if (xhr.status >= 200 && xhr.status < 400) {-->
-<!--            // Parse JSON response-->
-<!--            var data = JSON.parse(xhr.responseText);-->
-
-<!--            // Check if data is an object-->
-<!--            if (typeof data === 'object' && data !== null) {-->
-<!--                // Display images in the container-->
-<!--                var container = document.getElementById('imageContainer');-->
-
-<!--                // Loop through the object keys and values-->
-<!--                for (var key in data) {-->
-<!--                    if (data.hasOwnProperty(key)) {-->
-<!--                        var image = data[key];-->
-<!--                        container.innerHTML += '<img src="' + image + '" alt="' + image + '" style="max-width: 100%; margin-bottom: 10px;">';-->
-<!--                    }-->
-<!--                }-->
-<!--            } else {-->
-<!--                console.error('Data is not an object:', data);-->
-<!--            }-->
-<!--        }-->
-<!--    };-->
-
-<!--    xhr.send();-->
-
-<!--</script>-->
-
-<!--</body>-->
-<!--</html>-->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Viewer</title>
+
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-image: url('futuristic_cyberpunk_library_by_misconceptionaiart_dfxo50y-pre.jpeg');
+            background-image: url('../resources/futuristic_cyberpunk_library_by_misconceptionaiart_dfxo50y-pre.jpeg');
             background-size: 100% 500%;
             background-position: center;
             background-repeat: no-repeat;
             background-color: #111;
-            margin: 20px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
         }
 
-        .transparent-box {
-            background-color: rgba(0, 0, 0, 0.5); /* Adjust the transparency here */
-            padding: 10px;
-            border-radius: 10px;
-            overflow-y: auto; /* Add a scrollbar when content exceeds the box height */
-            max-height: 300px; /* Adjust the max height based on your preference */
+        #returnButton {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
         }
 
-        #imageViewerTitle {
-            margin-bottom: 20px;
+        #returnButton:hover {
+            background-color: #29b6f6;
         }
 
-        #imageList {
-            list-style-type: none;
-            padding: 0;
+        #returnToUploadButton {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin-top: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
+        }
+
+        #returnToUploadButton:hover {
+            background-color: #29b6f6;
         }
 
         #imageList li {
             margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #imageList li button {
+            margin-left: 10px;
+            color: #fff;
+            background-color: #ff0000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
+        }
+
+        #imageList li button:hover {
+            background-color: purple;
+        }
+
+        .transparent-box {
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 10px;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            overflow-y: auto;
+            max-height: 300px;
+            margin-top: 20px;
         }
 
         a {
-            color: #fff;
+            color: #00ff00;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
 <div class="transparent-box" id="imageViewerTitle">
-    <h1><a>Image Viewer</a></h1>
+    <h1><a>Welcome to the Library</a></h1>
 </div>
 
 <div class="transparent-box" id="imageListContainer">
     <ul id="imageList"></ul>
+    <p id="emptyMessage" style="display: none; color: #00ff00;">Wow, such empty!</p>
 </div>
 
+<button id="returnButton" onclick="location.href='/index.html'">Return to Main Page</button>
+<button id="returnToUploadButton" onclick="location.href='/fileUpload.html'">Return to Upload</button>
+
 <script>
-    // Fetch image filenames using XMLHttpRequest
+    function deleteFile(folder, fileName) {
+        console.log('Deleting file with folder:', folder, 'and fileName:', fileName);
+
+        var xhrDelete = new XMLHttpRequest();
+        xhrDelete.open('DELETE', '/upload/' + fileName, true);
+
+        xhrDelete.setRequestHeader('Content-Type', 'application/json');
+
+        xhrDelete.onload = function () {
+            if (xhrDelete.status == 204) {
+                window.location.href = '../deleteSuccessful.html';
+            }
+            else if  (xhrDelete.status == 404) {
+                window.location.href = '../deleteFailed.html';
+            }
+            else {
+                console.error('Failed to delete file:', xhrDelete.responseText);
+            }
+        };
+
+        var requestData = JSON.stringify({
+            folder: folder,
+            fileName: fileName
+        });
+
+        xhrDelete.send(requestData);
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.open('GET', '/upload/getImages.php', true);
 
-    xhr.onload = function() {
+    xhr.onload = function () {
         if (xhr.status >= 200 && xhr.status < 400) {
-            // Parse JSON response
             var data = JSON.parse(xhr.responseText);
 
-            // Check if data is an object
             if (typeof data === 'object' && data !== null) {
-                // Display images as hyperlinks in the list
                 var imageList = document.getElementById('imageList');
-                for (var key in data) {
-                    if (data.hasOwnProperty(key)) {
-                        var image = data[key];
-                        var listItem = document.createElement('li');
-                        var link = document.createElement('a');
-                        link.href = '/upload/' + encodeURIComponent(image); // Encode the image filename
-                        link.textContent = image;
-                        listItem.appendChild(link);
-                        imageList.appendChild(listItem);
+                var emptyMessage = document.getElementById('emptyMessage');
+
+                if (Object.keys(data).length === 0) {
+                    emptyMessage.style.display = 'block';
+                } else {
+                    for (var key in data) {
+                        if (data.hasOwnProperty(key)) {
+                            var image = data[key];
+                            var listItem = document.createElement('li');
+                            var link = document.createElement('a');
+                            link.href = '/upload/' + encodeURIComponent(image);
+                            link.textContent = image;
+
+                            var deleteButton = document.createElement('button');
+                            deleteButton.textContent = 'Delete';
+                            deleteButton.onclick = function (img) {
+                                return function () {
+                                    var shouldDelete = confirm('Are you sure you want to delete this file?');
+                                    if (shouldDelete) {
+                                        deleteFile('/upload/', img);
+                                    }
+                                };
+                            }(image);
+
+                            listItem.appendChild(link);
+                            listItem.appendChild(deleteButton);
+                            imageList.appendChild(listItem);
+                        }
                     }
                 }
             } else {

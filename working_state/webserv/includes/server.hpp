@@ -55,7 +55,7 @@ class server {
 				void createNewDeleteRequest();
 				void createNewCgiRequest();
 
-
+				bool invalidRequest;
 				int clientSocket;
 				serverConf &serverConfig;
 				int serverIndex;

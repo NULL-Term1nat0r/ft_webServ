@@ -28,6 +28,7 @@ server::~server() {
 	}
 	for (size_t i = 0; i < clients.size(); i++) {
 		clients[i]->~client();
+		delete clients[i];
 	}
 
 	//close(serverSocket);
@@ -128,7 +129,7 @@ void server::serverRoutine() {
 				clients[i]->executeClientRequest();
 			}
 		}
-		if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) {
+		if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) { //pollEvents[i].revents == 0 &&
 			clients[i]->executeClientResponse();
 //			if (clients[i].clientResponse->_allChunkSent) {
 //				removeSocket(static_cast<int>(i));

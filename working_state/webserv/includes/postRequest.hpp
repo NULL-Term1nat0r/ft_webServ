@@ -41,6 +41,7 @@ private:
 	std::string				_fileName;
 	std::string				_fileType;
 	std::string 			_filePath;
+	std::string 			_fileExtension;
 
 
 	std::vector<uint8_t> 	_binaryData;
@@ -50,12 +51,13 @@ private:
 	bool					_cgi;
 	bool					_firstChunk;
 	bool					_allChunksSent;
-
+	bool					_lastChunkSent;
 	bool					_firstChunkSent;
 
 public:
 	explicit postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~postRequest();
+
 
 	void parseBoundary(std::string &data);
 	void parseContentLength(std::string &data);
@@ -63,6 +65,7 @@ public:
 	void parseCgi(std::string &data);
 	void parseFileName();
 	void parseFileType();
+	void parseFileExtension();
 
 	void writeBinaryToFile(std::vector<uint8_t> &data);
 	void parseFirstChunk(std::vector<uint8_t> &data);
@@ -81,6 +84,8 @@ public:
 	int checkPostrequest();
 
 	std::string getBoundary();
+	std::string getFileType();
+	std::string getFileExtension();
 	int getContentLength();
 	bool getMultiFormData();
 	bool getTextData();

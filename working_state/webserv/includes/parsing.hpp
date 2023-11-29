@@ -35,6 +35,7 @@ public:
 	static char decodePercentEncoding(const char *encoded);
 	static void decodeUrl(std::string &url);
 	static std::string getFileName(std::string filePath);
+	static std::string constructPage(std::string url);
 
 };
 

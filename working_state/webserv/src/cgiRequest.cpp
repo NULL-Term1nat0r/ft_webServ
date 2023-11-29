@@ -28,6 +28,7 @@ cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serve
 	_fileDescriptor = 0;
 	_execPath = "";
 	_execExtension = "";
+	statusCode = 200;
 	setScriptPage();
 }
 
@@ -152,6 +153,7 @@ bool cgiRequest::executeCgi() {
 
 	if (!cgiValidExtension(_baseRequest->getStringURL())){
 		_returnFilePath =  parsing::getErrorPagePath(500);
+		statusCode = 500;
 		return false;
 	}
 
@@ -167,6 +169,7 @@ bool cgiRequest::executeCgi() {
 		getErrorHtmlContent(500);
 		close(_fileDescriptor);
 		_returnFilePath = parsing::getErrorPagePath(500);
+		statusCode = 500;
 		return false;
 	}
 	else if (childId == 0) {
@@ -187,11 +190,13 @@ bool cgiRequest::executeCgi() {
 	close(_fileDescriptor);
 	if (WIFSIGNALED(status))
 	{
-		_returnFilePath = parsing::getErrorPagePath(504);
+		_returnFilePath = parsing::getErrorPagePath(500);
+		status = 500;
 		return false;
 	}
 	if (WEXITSTATUS(status) == 69) {
-		_returnFilePath = parsing::getErrorPagePath(500);
+		_returnFilePath = parsing::getErrorPagePath(504);
+		statusCode = 504;
 		return false;
 	}
 	_returnFilePath = _tempFile;

@@ -13,7 +13,7 @@
 #include "../includes/deleteRequest.hpp"
 
 deleteRequest::deleteRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex){
-	deleteFile(_baseRequest->getStringURL().c_str());
+	statusCode = 204;
 }
 
 deleteRequest::~deleteRequest() {}
@@ -22,7 +22,10 @@ const char	*deleteRequest::deleteRequestInvalidFileException::what() const throw
 	return "Couldn't remove file\n";
 }
 
-void deleteRequest::deleteFile(const char*filePath){
-	if (remove(filePath) != 0)
+void deleteRequest::deleteFile(){
+	if (remove(("html_files" + _baseRequest->getStringURL()).c_str()) != 0) {
+		statusCode = 404;
 		throw deleteRequestInvalidFileException();
+	}
+
 }
