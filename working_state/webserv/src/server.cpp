@@ -6,7 +6,7 @@
 /*   By: jkroger <jkroger@student.42wolfsburg.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/06 15:13:02 by estruckm          #+#    #+#             */
-/*   Updated: 2023/11/28 01:27:24 by jkroger          ###   ########.fr       */
+/*   Updated: 2023/12/01 14:14:37 by jkroger          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,20 +120,29 @@ void server::serverRoutine() {
 		//throw pollNotWorking();
 	}
 	for (size_t i = 0; i < this->pollEvents.size(); ++i) {
-		if (this->pollEvents[i].revents == POLLIN) {
-			if (this->pollEvents[i].fd == this->serverSocket) {
-//				std::cout << "new connection incoming" << std::endl;
-				handleNewConnection();
-//				std::cout << "new connection accepted" << std::endl;
-			} else {
-				clients[i]->executeClientRequest();
+		try{
+			if (this->pollEvents[i].revents == POLLIN) {
+				if (this->pollEvents[i].fd == this->serverSocket) {
+	//				std::cout << "new connection incoming" << std::endl;
+					handleNewConnection();
+	//				std::cout << "new connection accepted" << std::endl;
+				} else {
+					clients[i]->executeClientRequest();
+				}
+			}
+			if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) { //pollEvents[i].revents == 0 &&
+				clients[i]->executeClientResponse();
+				if (clients[i]->clientResponse->_allChunkSent) {
+					removeSocket(static_cast<int>(i));
+				}
+				// if (clients[i].clientResponse->_allChunkSent) {
+				// 	removeSocket(static_cast<int>(i));
+				// }
 			}
 		}
-		if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) { //pollEvents[i].revents == 0 &&
-			clients[i]->executeClientResponse();
-//			if (clients[i].clientResponse->_allChunkSent) {
-//				removeSocket(static_cast<int>(i));
-//			}
+		catch (std::exception &e){
+			// clients[i]->executeClientResponse();
+			std::cout << "caught exception of server" << e.what() <<  std::endl;
 		}
 //		std::cout << "if (time: " << time(NULL) << "- socketTimeouts[" << i << "]: " << socketTimeouts[i] << " > serv._clienttimeout: " << serv._clientTimeout << std::endl;
 // 		if (time(NULL) - clients[i].lastActivity > serverConfig._clientTimeout) {

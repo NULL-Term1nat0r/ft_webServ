@@ -207,6 +207,7 @@ void server::client::executeClientResponse(){
 		else if (this->clientResponse->_allChunkSent) {
 			delete this->clientResponse;
 			this->clientResponse = NULL;
+			// close(this->clientSocket);
 		}
 		else {
 			try {
@@ -216,6 +217,7 @@ void server::client::executeClientResponse(){
 					throw std::runtime_error("send failed");
 			}
 			catch (std::exception &e) {
+				std::cout << green << e.what() << reset << std::endl;
 				std::cout << "caught exception of clientResponse" << std::endl;
 			}
 		}

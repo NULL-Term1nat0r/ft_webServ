@@ -6,7 +6,10 @@ response::response(std::string responseFilePath, int statusCode, serverConf &ser
 	if (statusCode == 619)
 		this->bodySize = 0;
 	else
+	{
+		// std::cout << green << "bodySize-> Counting file size" << filePath << reset << std::endl;
 		this->bodySize = countFileSize(this->filePath);
+	}
 //	this->serverClass = serverClass;
 }
 
@@ -24,7 +27,7 @@ const char	*response::responseInvalidFileException::what() const throw() {
 }
 
 std::string response::getChunk(int chunkSize){
-	std::cout << "send chunk\n";
+	// std::cout << "send chunk\n";
 	if (statusCode == 619){
 		this->_allChunkSent = true;
 		return createDirectoryListingHtml();
@@ -58,7 +61,10 @@ std::string response::createFirstChunk(int chunkSize){
 //	std::cout << "filePath in createFirstChunk: " << this->filePath << std::endl;
 	
 	if (!file.is_open())
+	{
+		std::cout << "createFirstChunk: file not open\n";
 		throw responseInvalidFileException();
+	}
 	std::string header;
 	std::string body;
 	std::string responseChunk;
@@ -69,9 +75,9 @@ std::string response::createFirstChunk(int chunkSize){
 
 	header += "HTTP/1.1 " + _statusCode + " OK\r\n";
 	header += "Content-Type: " + serverConfig.getFileType(this->filePath) + "\r\n";
-	std::cout << blue << "ContentType: " << serverConfig.getFileType(this->filePath) << reset << std::endl;
+	// std::cout << blue << "ContentType: " << serverConfig.getFileType(this->filePath) << reset << std::endl;
 	header += "Content-Length: " + std::to_string(countFileSize(this->filePath)) + "\r\n";
-	std::cout << blue << "ContentLength: " << countFileSize(this->filePath) << reset << std::endl;
+	// std::cout << blue << "ContentLength: " << countFileSize(this->filePath) << reset << std::endl;
 //	header += "Cache-Control: public, max-age=31536000\r\n";
 //	header += "ETag: unique-identifier\r\n";
 	header += "Connection: keep-alive\r\n";
@@ -85,6 +91,7 @@ std::string response::createFirstChunk(int chunkSize){
 std::string response::readFileContent(int chunkSize){
 	std::ifstream file(this->filePath.c_str(), std::ios::binary);
 	if (!file.is_open()){
+		std::cout << "readFileContent: file not open\n";
 		throw responseInvalidFileException();
 	}
 	file.seekg(this->startPosition);
@@ -95,7 +102,7 @@ std::string response::readFileContent(int chunkSize){
 	delete[] buffer;
 	file.close();
 	_dataSend += result.length();
-	std::cout << "dataSend: " << _dataSend <<  "bodySize: " << bodySize << std::endl;
+	// std::cout << "dataSend: " << _dataSend <<  "bodySize: " << bodySize << std::endl;
 	if (_dataSend >= bodySize){
 		std::cout << "all chunks in response send\n";
 		_allChunkSent = true;
@@ -106,7 +113,10 @@ std::string response::readFileContent(int chunkSize){
 long response::countFileSize(std::string filePath){
 	std::ifstream file(filePath.c_str(), std::ios::binary);
 	if (!file.is_open())
+	{
+		std::cout << "countFileSize: file not open\n";
 		throw responseInvalidFileException();
+	}
 	file.seekg(0, std::ios::end);
 	long fileSize = file.tellg();
 	file.close();
