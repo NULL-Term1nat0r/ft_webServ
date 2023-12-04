@@ -39,7 +39,7 @@ void server::client::executeClientRequest(){
 			return;
 		else if (checkDeleteRequest())
 			return;
-		else if (checkCgiRequesty())
+		else if (checkCgiRequest())
 			return;
 		else {
 			std::cout << green <<  "no valid request\n" << reset << std::endl;
@@ -142,6 +142,10 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 		}
 		if (this->baseRequest->getGetMethod() && this->baseRequest->getCgi())
 			createNewCgiRequest();
+		else if (this->baseRequest->getPostMethod() && this->baseRequest->getCgi()){
+			std::cout << "cgi post request incoming\n";
+			createNewCgiRequest();
+		}
 		else if (this->baseRequest->getPostMethod()){
 			createNewPostRequest();
 		}

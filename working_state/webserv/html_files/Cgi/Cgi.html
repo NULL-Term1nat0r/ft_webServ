@@ -1,5 +1,114 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Cyberpunk CGI Example</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            background-image: url('../resources/neon-car-in-cyberpunk-2077.jpeg');-->
+<!--            background-size: 100% 330%;-->
+<!--            background-position: center;-->
+<!--            background-repeat: no-repeat;-->
+<!--            background-color: #0f0f0f;-->
+<!--            text-align: center;-->
+<!--            overflow: hidden;-->
+<!--            position: relative;-->
+<!--            font-family: 'Courier New', monospace;-->
+<!--            color: #00ff00;-->
+<!--            padding: 20px;-->
+<!--        }-->
+
+<!--        button#mainPageButton {-->
+<!--            font-family: 'Courier New', monospace;-->
+<!--            background-color: rgba(26, 26, 26, 0.8);-->
+<!--            font-size: 24px;-->
+<!--            color: #00ff00;-->
+<!--            border: 1px solid #29b6f6;-->
+<!--            border-radius: 5px;-->
+<!--            padding: 10px 20px;-->
+<!--            cursor: pointer;-->
+<!--            transition: background-color 0.4s ease;-->
+<!--            position: absolute;-->
+<!--            top: -90px;-->
+<!--            left: 50%;-->
+<!--            transform: translateX(-50%);-->
+<!--        }-->
+
+<!--        button#mainPageButton:hover {-->
+<!--            background-color: #29b6f6;-->
+<!--        }-->
+
+<!--        h1, h2 {-->
+<!--            color: #00ff00;-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            position: relative;-->
+<!--        }-->
+
+<!--        .transparent-box {-->
+<!--            background-color: rgba(26, 26, 26, 0.8);-->
+<!--            padding: 20px;-->
+<!--            border: 1px solid #29b6f6;-->
+<!--            border-radius: 5px;-->
+<!--            max-width: 400px;-->
+<!--            margin: 80px auto 20px;-->
+<!--        }-->
+
+<!--        form, .script-box {-->
+<!--            width: 100%;-->
+<!--            box-sizing: border-box;-->
+<!--        }-->
+
+<!--        .script-box input[type="text"], .script-box input[type="submit"] {-->
+<!--            background-color: rgba(26, 26, 26, 0.5);-->
+<!--            color: #00ff00;-->
+<!--            border: 1px solid #29b6f6;-->
+<!--            border-radius: 3px;-->
+<!--            width: calc(100% - 22px);-->
+<!--            margin-bottom: 10px;-->
+<!--            padding: 10px;-->
+<!--        }-->
+
+<!--        .script-box input[type="submit"] {-->
+<!--            cursor: pointer;-->
+<!--            width: 100%;-->
+<!--            background-color: #29b6f6;-->
+<!--            color: #0f0f0f;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<div class="container">-->
+<!--    <button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>-->
+
+<!--    <div class="transparent-box">-->
+<!--        <h1>GET py</h1>-->
+<!--        <h2>Enter your name:</h2>-->
+<!--        <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">-->
+<!--            <input type="text" name="name">-->
+<!--            <input type="submit" value="Submit">-->
+<!--        </form>-->
+<!--    </div>-->
+
+<!--    <div class="transparent-box">-->
+<!--        <h1>GET php</h1>-->
+<!--        <h2>Enter your name:</h2>-->
+<!--        <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">-->
+<!--            <input type="text" name="name">-->
+<!--            <input type="submit" value="Submit">-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!--</body>-->
+<!--</html>-->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,7 +139,7 @@
             cursor: pointer;
             transition: background-color 0.4s ease;
             position: absolute;
-            top: -90px;
+            top: 10px;
             left: 50%;
             transform: translateX(-50%);
         }
@@ -39,29 +148,39 @@
             background-color: #29b6f6;
         }
 
-        h1, h2 {
+        h1,
+        h2 {
             color: #00ff00;
         }
 
-        .container {
-            position: relative;
-        }
-
-        .transparent-box {
+        .transparent-box1 {
             background-color: rgba(26, 26, 26, 0.8);
             padding: 20px;
             border: 1px solid #29b6f6;
             border-radius: 5px;
             max-width: 400px;
-            margin: 80px auto 20px;
+            margin: 20px 0px 0px 625px;
         }
 
-        form, .script-box {
+        .transparent-box2 {
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 20px;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            max-width: 400px;
+            margin: -545px 0px 0px 1437px;
+            position: absolute;
+        }
+
+        form,
+        .script-box {
             width: 100%;
             box-sizing: border-box;
         }
 
-        .script-box input[type="text"], .script-box input[type="submit"] {
+        .script-box input[type="text"],
+        .script-box input[type="Run the Script"],
+        .script-box input[type="submit"] {
             background-color: rgba(26, 26, 26, 0.5);
             color: #00ff00;
             border: 1px solid #29b6f6;
@@ -77,31 +196,129 @@
             background-color: #29b6f6;
             color: #0f0f0f;
         }
+
+        /* NEW STUFF */
+        /*Choose a script*/
+        label {
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 18px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            display: inline-block;
+            transition: background-color 0.4s ease;
+            width: 165px;
+        }
+
+        label:hover {
+            background-color: #29b6f6;
+        }
+
+        /* Upload the script */
+        input[type="file"] {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 18px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Run the Script button */
+        .transparent-box2 input[type="submit"] {
+            cursor: pointer;
+            width: 205px;
+            background-color: #29b6f6;
+            color: #0f0f0f;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            transition: background-color 0.4s ease;
+        }
+
+        /* Displayed script */
+        #fileNameDisplay {
+            background-color: rgba(26, 26, 26, 0.8);
+            color: #00ff00;
+            max-width: 40%;
+            margin-bottom: 15px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
     </style>
+
+    <script>
+        function updateScriptName() {
+            var input = document.getElementById('scriptToUpload');
+            var scriptNameDisplay = document.getElementById('scriptNameDisplay');
+
+            scriptNameDisplay.textContent = input.files[0].name;
+        }
+
+        function confirmScriptExecution() {
+            var confirmExecution = confirm("Do you want to run the uploaded script?");
+            if (confirmExecution) {
+                // Perform action if user confirms
+                alert("Executing script.");
+
+            } else {
+                // Perform action if user cancels
+                alert("Aborting script execution.");
+                window.location.href = 'scriptFailed.html';
+            }
+        }
+    </script>
+    <!-- END OF NEW STUFF -->
 </head>
+
 <body>
 
-<div class="container">
-    <button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>
+<button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>
 
-    <div class="transparent-box">
-        <h1>GET py</h1>
-        <h2>Enter your name:</h2>
-        <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">
-            <input type="text" name="name">
-            <input type="submit" value="Submit">
-        </form>
-    </div>
-
-    <div class="transparent-box">
-        <h1>GET php</h1>
-        <h2>Enter your name:</h2>
-        <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">
-            <input type="text" name="name">
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+<!-- NEW STUFF -->
+<div class="transparent-box1">
+    <h1>GET py</h1>
+    <h2>Enter your name:</h2>
+    <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">
+        <input type="text" name="name">
+        <input type="submit" value="Submit">
+    </form>
 </div>
 
+<div class="transparent-box1">
+    <h1>GET php</h1>
+    <h2>Enter your name:</h2>
+    <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">
+        <input type="text" name="name">
+        <input type="submit" value="Submit">
+    </form>
+</div>
+<!-- END OF NEW STUFF -->
+
+<!-- NEW STUFF -->
+<div class="transparent-box2">
+    <h1>Run a script:</h1>
+    <form action="./uploadedScript" method="post" enctype="multipart/form-data">
+        <label for="scriptToUpload">Choose a script</label>
+        <input type="file" name="scriptToUpload" id="scriptToUpload" onchange="updateScriptName()">
+        <div id="scriptNameDisplay"></div>
+        <input type="submit" value="Run the Script" name="submit" onclick="confirmScriptExecution()">
+    </form>
+</div>
+<!-- END OF NEW STUFF -->
+
 </body>
+
 </html>
