@@ -43,17 +43,30 @@ public:
 
 	std::string filePath;
 	int statusCode;
+	bool isFile;
+	bool isFolder;
+	bool isPageConfigured;
+	bool indexPageExists;
+	bool autoIndexActivated;
+
 
 	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 	bool redirection;
 	bool autoIndexListing;
+	std::string url;
+	std::string page;
 
-	bool checkRewrite(std::string url);
+	void  checkRewrite();
+	std::string checkFolderPath(std::string url);
+	std::string checkFilePath(std::string url);
 	std::string getRewrite(std::string url);
 	static bool fileExists(const char* filePath);
 	std::string createFilePath();
+	std::string constructFilePath();
+	std::string constructFolderPath();
+	std::string NonConfiguredPage();
 
 	std::string getFilePath();
 	bool getRedirection();

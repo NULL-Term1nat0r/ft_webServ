@@ -3,22 +3,23 @@
 
 
 
-typedef struct t_map{
-	std::string key;
-} t_map;
+
+//int main() {
+//	std::string str = "23";
+//	bool activated = str == "25";
+//	std::cout << activated << std::endl;
+//}
+
+
 
 
 //int main()
 //{
-//
-//
-//
-//	std::string str = "iunningiengjpg.";
-//	size_t start = str.find_last_of('.');
-//	if (start == std::string::npos)
-//		std::cout << "start1: " << start << std::endl;
-//	else
-//		std::cout << "start2: " << start << std::endl;
+//	std::cout << "page: " << parsing::constructPage("/iuhihoihn/iubibib") << std::endl;
+//	std::vector<std:: string> result = parsing::split("/iuhihoihn/iubibib/oihoio.html", '/');
+//	std::cout << "page: " << result[0] << std::endl;
+//	std::cout << "page: " << result[1] << std::endl;
+//	std::cout << "page: " << result[2] << std::endl;
 //
 //	return 0;
 //}

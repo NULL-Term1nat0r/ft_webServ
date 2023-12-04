@@ -9,10 +9,14 @@ name = form.getvalue("name")
 print("<html>")
 print("<head><title>CGI Example</title></head>")
 print("<body>")
+
+
+lol
+
 if name:
-print(f"<h1>Hello, {name}!</h1>")
+    print(f"<h1>Hello, {name}!</h1>")
 else:
-print("<h1>No name provided.</h1>")
+    print("<h1>No name provided.</h1>")
 
 print("</body>")
 print("</html>")

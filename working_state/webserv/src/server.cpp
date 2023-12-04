@@ -73,7 +73,7 @@ void server::addSocket(int clientSocket) {
 void server::removeSocket(int index) {
 	close(pollEvents[index].fd);
 	pollEvents.erase(pollEvents.begin() + index);
-	clients[index]->~client();
+	delete(clients[index]);
 	clients.erase(clients.begin() + index);
 }
 
@@ -173,11 +173,14 @@ void	getSignals() {
 
 void server::runAllServers(char *configFilePath) {
 	Config conf = Config();
+
 	conf.parseConfFile(configFilePath);
 	serverConf serverConfigs(conf);
 	std::vector<server *> servers;
+
+	std::cout << "rewritePath: " << serverConfigs._server[0].locations["/"].rewrite << std::endl;
 //	for (int i = 0; i < static_cast<int>(serverConfigs._server.size()); i++) {
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < serverConfigs._server.size(); i++) {
 		try{
 			server *serverClass = new server(serverConfigs, i);
 			servers.push_back(serverClass);

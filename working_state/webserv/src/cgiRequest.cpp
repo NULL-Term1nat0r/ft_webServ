@@ -91,7 +91,7 @@ void cgiRequest::getErrorHtmlContent(int _errorCode) {
 	}
 
 bool cgiRequest::createTemporaryFile(){
-	_fileDescriptor= open(_tempFile.c_str(), O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+	_fileDescriptor= open(_tempFile.c_str(), O_TRUNC| O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
 	if (_fileDescriptor != -1)
 		return true;
 	return false;

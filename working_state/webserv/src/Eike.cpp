@@ -17,12 +17,19 @@
 //#include "../includes/response.hpp"
 #include "../includes/server.hpp"
 
-int main(){
-	try {
-		server::runAllServers("../config_parser/confFiles/server.conf");
+int main(int argc, char **argv) {
+	if (argc != 2) {
+		std::cout << "Usage: ./webserv <config_file>" << std::endl;
+		return 1;
 	}
-	catch (std::exception &e) {
-		std::cout << e.what() << std::endl;
+	else {
+		try {
+			server::runAllServers(argv[1]);
+		}
+		catch (std::exception &e) {
+			std::cout << e.what() << std::endl;
+		}
 	}
+
 	return 0;
 }

@@ -29,7 +29,7 @@ server::client::~client() {
 
 void server::client::executeClientRequest(){
 	std::vector<uint8_t> _request(serverConfig._buffSize);
-	recv(this->clientSocket, &_request[0], serverConfig._buffSize, 0);
+	int lol = recv(this->clientSocket, &_request[0], serverConfig._buffSize, 0);
 //	std::cout << parsing::vectorToString(_request) << std::endl;
 	createNewRequest(_request);
 //	try {
@@ -39,7 +39,7 @@ void server::client::executeClientRequest(){
 			return;
 		else if (checkDeleteRequest())
 			return;
-		else if (checkCgiRequest())
+		else if (checkCgiRequesty())
 			return;
 		else {
 			std::cout << green <<  "no valid request\n" << reset << std::endl;

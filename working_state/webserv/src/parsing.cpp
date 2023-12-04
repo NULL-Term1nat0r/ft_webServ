@@ -126,12 +126,14 @@ void parsing::decodeUrl(std::string &url) {
 }
 
 std::string parsing::constructPage(std::string url) {
+	if (url == "/")
+		return "/";
 	std::string filePath = "./html_files" + url;
 
 	if(fileExists(filePath)) {
 		std::vector <std::string> folderContainer = split(url, '/');
 		if (folderContainer.size() == 1)
-			return "/";
+			return ("/");
 		std::string temp = "";
 		for (size_t i = 0; i <= folderContainer.size() - 2; i++) {
 			temp += "/" + folderContainer[i];
@@ -144,6 +146,12 @@ std::string parsing::constructPage(std::string url) {
 	else {
 		return "";
 	}
+}
+
+bool parsing::checkIfPageConfigured(std::map<std::string, struct LocationStruc> locations, std::string page){
+	if (locations.find(page) != locations.end())
+		return true;
+	return false;
 }
 
 std::string parsing::getErrorPagePath(int errorCode){
