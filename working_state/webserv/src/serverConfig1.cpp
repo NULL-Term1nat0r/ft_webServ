@@ -11,6 +11,7 @@ serverSettings::serverSettings() : locations(), port(0), serverName(""), errorPa
 serverSettings::~serverSettings() {}
 
 void serverConf::constructFileTypeContainer(){
+<<<<<<< HEAD
 	fileTypeContainer["html"] = "text/html";
 	fileTypeContainer["css"] = "text/css";
 	fileTypeContainer["py"] = "text/python";
@@ -147,6 +148,7 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 	}
 }
 
+<<<<<<< HEAD
 std::string    serverConf::getErrorPage(int serverIndex, int errorCode) {
 	return _server[serverIndex].errorPages[errorCode];
 }
@@ -160,20 +162,39 @@ void	serverConf::initErrorPages(serverSettings &conf) {
 	conf.errorPages[415] = "./html_files/errorPages/error415.html";
 	conf.errorPages[500] = "./html_files/errorPages/error500.html";
 	conf.errorPages[504] = "./html_files/errorPages/error504.html";
+=======
+void	serverConf::_initErrorPages(serverSettings &conf) {
+	conf.errorPages[400] = "html_files/errorPages/error400.html";
+	conf.errorPages[403] = "html_files/errorPages/error403.html";
+	conf.errorPages[404] = "html_files/errorPages/error404.html";
+	conf.errorPages[405] = "html_files/errorPages/error405.html";
+	conf.errorPages[413] = "html_files/errorPages/error413.html";
+	conf.errorPages[415] = "html_files/errorPages/error415.html";
+	conf.errorPages[500] = "html_files/errorPages/error500.html";
+	conf.errorPages[504] = "html_files/errorPages/error504.html";
+>>>>>>> 99ae995c27b7157c0b311a9de4887ea665d4655e
+}
+
+void	serverConf::_defaultServer() {
+	serverSettings	conf;
+	conf.port = 80;
+	conf.serverName = "default_server";
+	conf.bodySize = 500000000;
+	_initErrorPages(conf);
+	_server.push_back(conf);
 }
 
 void	serverConf::getServerConf(Config conf) {
 	_globalValues(conf);
 	_serverValues(conf);
-	_checkDuplicatePorts();
-	if (_server.empty())
-		throw WrongAmount();
-	_indexFileNotExisting(conf);
-
-	for (size_t i = 0; i < _server.size(); i++) {
-		for (std::map<int, std::string>::iterator it = _server[i].errorPages.begin(); it != _server[i].errorPages.end(); it++) {
-			std::cout << it->first << " " << it->second << std::endl;
-		}
-		std::cout << std::endl;
+	if (_server.empty()) {
+		_defaultServer();
+		return ;
 	}
+	_checkDuplicatePorts();
+	_indexFileNotExisting(conf);
+}
+
+std::string	serverConf::getErrorPage(int serverIndex, int errorCode) {
+	return _server[serverIndex].errorPages[errorCode];
 }

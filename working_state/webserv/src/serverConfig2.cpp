@@ -3,7 +3,7 @@
 
 serverConf::serverConf() {}
 
-serverConf::serverConf(Config conf) : _validExtensions(), _workerProcesses(0), _workerConnections(0), _scriptTimeout(-1), _clientTimeout(-1), _buffSize(0), _backlog(0),
+serverConf::serverConf(Config conf) : _workerProcesses(1), _workerConnections(1), _scriptTimeout(0), _clientTimeout(0), _buffSize(9000), _backlog(1),
 									   _server(){
 	constructFileTypeContainer();
 	getServerConf(conf);
@@ -83,7 +83,7 @@ void	serverConf::_setPort(std::map<std::string, std::vector<std::string> > locat
 }
 
 void	serverConf::_setGlobalServerValues(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
-	initErrorPages(conf);
+	_initErrorPages(conf);
 	void (serverConf::*serverFunc[]) (std::map<std::string, std::vector<std::string> > location, serverSettings &conf) = {&serverConf::_setBodySize, &serverConf::_setPort, &serverConf::_setServerName, &serverConf::_setErrorPages};
 	for (size_t i = 0; i < 4; i++)
 		(this->*serverFunc[i])(location, conf);

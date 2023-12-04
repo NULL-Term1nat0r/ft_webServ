@@ -100,7 +100,6 @@ bool	Config::_locationExists(std::string line, int i) {
 	return true;
 }
 
-//utils
 void	Config::_removeWhitespace(std::string& line) {
 	std::string::iterator it = line.begin();
 	while (it != line.end()) {
@@ -158,9 +157,8 @@ void	Config::_globalBlock(std::ifstream &nginxConfFile, std::string &line) {
 	} while (std::getline(nginxConfFile, line) && line.find('{') == std::string::npos);
 }
 
-// for utils
 bool	Config::_fileOpen(std::ifstream &nginxConfFile) {
-	if (!nginxConfFile.is_open() || nginxConfFile.peek() == std::ifstream::traits_type::eof())
+	if (!nginxConfFile.is_open())
 		return false;
 	return true;
 }
