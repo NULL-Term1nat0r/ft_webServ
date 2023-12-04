@@ -46,7 +46,6 @@ public:
 	bool 		checkFileType(std::string fileExtension);
 	void 		constructFileTypeContainer();
 	std::string	getErrorPage(int serverIndex, int errorCode);
->>>>>>> 99ae995c27b7157c0b311a9de4887ea665d4655e
 
 	class WrongPort : public std::exception
 	{
