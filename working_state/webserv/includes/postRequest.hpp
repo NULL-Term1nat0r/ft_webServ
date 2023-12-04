@@ -45,7 +45,7 @@ private:
 
 
 	std::vector<uint8_t> 	_binaryData;
-	bool					_isCgiScript
+	bool					_isCgiScript;
 	bool					_multiFormData;
 	bool					_textData;
 	bool					_cgi;

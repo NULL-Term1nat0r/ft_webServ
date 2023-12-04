@@ -13,18 +13,38 @@ server::client::client(int clientSocket, serverConf &serverConfig, int serverInd
 
 server::client::~client() {
 	std::cout <<" client got destructed\n";
-	 if (this->clientGetRequest != NULL)
-	 	delete this->clientGetRequest;
-	 if (this->clientPostRequest != NULL)
-	 	delete this->clientPostRequest;
-	 if (this->clientDeleteRequest != NULL)
-	 	delete this->clientDeleteRequest;
-	 if (this->clientCgiRequest != NULL)
-	 	delete this->clientCgiRequest;
-	 if (this->clientResponse != NULL)
-	 	delete this->clientResponse;
-	 if (this->baseRequest != NULL)
-	 	delete this->baseRequest;
+	 if (this->clientGetRequest != NULL){
+		 delete this->clientGetRequest;
+		 this->clientGetRequest = NULL;
+	 }
+	 if (this->clientPostRequest != NULL){
+		 delete this->clientPostRequest;
+		 this->clientPostRequest = NULL;
+	 }
+	 if (this->clientDeleteRequest != NULL){
+		 delete this->clientDeleteRequest;
+		 this->clientDeleteRequest = NULL;
+	 }
+	 if (this->clientCgiRequest != NULL){
+		 delete this->clientCgiRequest;
+		 this->clientCgiRequest = NULL;
+	 }
+	 if (this->clientResponse != NULL){
+		 delete this->clientResponse;
+		 this->clientResponse = NULL;
+	 }
+
+//	 	delete this->clientGetRequest;
+//	 if (this->clientPostRequest != NULL)
+//	 	delete this->clientPostRequest;
+//	 if (this->clientDeleteRequest != NULL)
+//	 	delete this->clientDeleteRequest;
+//	 if (this->clientCgiRequest != NULL)
+//	 	delete this->clientCgiRequest;
+//	 if (this->clientResponse != NULL)
+//	 	delete this->clientResponse;
+//	 if (this->baseRequest != NULL)
+//	 	delete this->baseRequest;
 }
 
 void server::client::executeClientRequest(){
@@ -132,6 +152,7 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 //		std::cout << yellow << this->baseRequest->getRequestString().substr(0, 500) << reset << std::endl;
 
 		std::string method  = this->baseRequest->getMethodString();
+		std::cout << "method: " << method << std::endl;
 		if (method == "")
 			return;
 		if (!this->baseRequest->checkPageMethod(method, this->baseRequest->getStringURL(), serverIndex, serverConfig)) {
@@ -214,7 +235,6 @@ void server::client::executeClientResponse(){
 		else if (this->clientResponse->_allChunkSent) {
 			delete this->clientResponse;
 			this->clientResponse = NULL;
-			// close(this->clientSocket);
 		}
 		else {
 			try {

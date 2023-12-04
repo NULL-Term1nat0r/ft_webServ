@@ -105,6 +105,11 @@ void request::printRequest(){
 bool request::checkPageMethod(std::string method, std::string url, int _serverIndex, serverConf &_serverConfig){
 	std::string page = parsing::returnPage(url);
 	std::cout << "pahge string in checkPageMethod: " << page << std::endl;
+	if (_serverConfig._server[_serverIndex].locations.empty()){
+		std::cout << "locations empty\n";
+		return true;
+	}
+		return true;
 //	std::cout << red << "url: " << url << reset << std::endl; // "/random
 	if (page != "/")
 		page = "/" + page;

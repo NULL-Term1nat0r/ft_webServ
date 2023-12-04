@@ -149,8 +149,12 @@ std::string parsing::constructPage(std::string url) {
 }
 
 bool parsing::checkIfPageConfigured(std::map<std::string, struct LocationStruc> locations, std::string page){
-	if (locations.find(page) != locations.end())
+	std::cout << blue << "lokking for page: " << page << reset << std::endl;
+	if (locations.find(page) != locations.end()){
+		std::cout << green << "compare page " << page << " with " << locations.find(page)->first << reset << std::endl;
 		return true;
+	}
+
 	return false;
 }
 

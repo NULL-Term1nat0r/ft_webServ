@@ -60,11 +60,10 @@ void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 
 void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
 	size_t boundaryPos = _baseRequest->getRequestString().find("Content-Type: " + _fileType + "\r\n\r\n");
-	std::cout << "char at boundary position in int value: " << static_cast<int>(_baseRequest->getRequestString()[boundaryPos]) << std::endl;
+	std::cout << "size of data: " << data.size() << std::endl;
+
 	if (boundaryPos != std::string::npos) {
-		std::cout << "fileType: " << _fileType << std::endl;
 		boundaryPos += ("Content-Type: " + _fileType + "\r\n\r\n").length();
-		std::cout << "char at boundary position: " << _baseRequest->getRequestString()[boundaryPos] << std::endl;
 	} else {
 		std::cout << "boundary not found" << std::endl;
 		throw postException();
@@ -73,16 +72,17 @@ void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
 
 	if (file.is_open()) {
 		std::vector<uint8_t> binaryData(data.begin() + boundaryPos, data.end());
+		if (static_cast<size_t>(this->_contentLength) <= data.size()){
+			checkLastChunk(data, this->_boundary);
+			std::cout << "size of data: " << data.size() << std::endl;
+			std::cout << " everything is in one chunk\n";
+			this->_allChunksSent = true;
+		}
 		file.write(reinterpret_cast<char *>(&binaryData[0]), binaryData.size());
 		file.close();
 	}
 	else {
 		throw postException();
-	}
-	if (static_cast<size_t>(this->_contentLength) <= data.size()){
-		checkLastChunk(data, this->_boundary);
-		std::cout << " everything is in one chunk\n";
-		this->_allChunksSent = true;
 	}
 }
 

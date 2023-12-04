@@ -25,10 +25,9 @@ getRequest::getRequest(request *baseRequest, serverConf &serverConfig, int serve
 	this->page = parsing::constructPage(url);
 	this->isFile = parsing::fileExists(("./html_files" + url).c_str());
 	this->isFolder = parsing::folderExists(("./html_files" + url).c_str());
-	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, url);
+	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, page);
 	std::cout << red << "isPageConfigured = " << isPageConfigured << reset << std::endl;
 	if (isPageConfigured){
-		this->page = parsing::constructPage(url);
 		this->indexPageExists = _serverConfig._server[serverIndex].locations[page].indexBool;
 		this->autoIndexActivated = _serverConfig._server[serverIndex].locations[page].autoindex == "on";
 	}
@@ -41,7 +40,7 @@ getRequest::~getRequest() {}
 std::string getRequest::createFilePath() {
 	std::cout << "createFilePath activated\n";
 
-	if (isPageConfigured)
+	if (!isPageConfigured)
 		return NonConfiguredPage();
 
 	if (isFile){
