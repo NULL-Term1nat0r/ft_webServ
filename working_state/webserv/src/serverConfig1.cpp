@@ -13,8 +13,8 @@ serverSettings::~serverSettings() {}
 void serverConf::constructFileTypeContainer(){
 	fileTypeContainer["html"] = "text/html";
 	fileTypeContainer["css"] = "text/css";
-	fileTypeContainer["py"] = "text/html";
-	fileTypeContainer["php"] = "text/html";
+	fileTypeContainer["py"] = "text/python";
+	fileTypeContainer["php"] = "text/php";
 	fileTypeContainer["jpg"] = "image/jpeg";
 	fileTypeContainer["jpeg"] = "image/jpeg";
 	fileTypeContainer["png"] = "image/png";

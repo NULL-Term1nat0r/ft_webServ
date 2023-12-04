@@ -22,6 +22,7 @@ postRequest::postRequest(request *baseRequest, serverConf &serverConfig, int ser
 	this->_contentLength = std::stoi(parsing::returnValue("Content-Length:", _baseRequest->getRequestString(), "\r"));
 	std::cout << "contentLength: " << this->_contentLength << std::endl;
 	this->_filePath = "./html_files/upload/" + this->_fileName;
+	this->_fileType = _serverConfig.fileTypeContainer[_fileExtension];
 	this->_dataRecieved = 0;
 }
 
@@ -42,7 +43,8 @@ void postRequest::parseFileExtension() {
 
 void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 
-	if (!_firstChunkSent) { //first chunk is revieced
+	if (!_firstChunkSent) {
+		std::cout << "request headers: " << _baseRequest->getRequestString() << std::endl;
 		handleFirstChunk(data);
 	}
 	if (_firstChunkSent && static_cast<size_t>(_contentLength - _dataRecieved) > data.size()) { //chunks after first chunk
@@ -56,11 +58,12 @@ void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 }
 
 void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
-	std::string fileType = _serverConfig.fileTypeContainer[_fileExtension];
-	size_t boundaryPos = _baseRequest->getRequestString().find(fileType + "\r\n\r\n");
+	size_t boundaryPos = _baseRequest->getRequestString().find("Content-Type: " + _fileType + "\r\n\r\n");
+	std::cout << "char at boundary position in int value: " << static_cast<int>(_baseRequest->getRequestString()[boundaryPos]) << std::endl;
 	if (boundaryPos != std::string::npos) {
-		std::cout << "fileType: " << fileType << std::endl;
-		boundaryPos += fileType.length() + 4;
+		std::cout << "fileType: " << _fileType << std::endl;
+		boundaryPos += ("Content-Type: " + _fileType + "\r\n\r\n").length();
+		std::cout << "char at boundary position: " << _baseRequest->getRequestString()[boundaryPos] << std::endl;
 	} else {
 		std::cout << "boundary not found" << std::endl;
 		throw postException();

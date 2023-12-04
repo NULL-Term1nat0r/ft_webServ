@@ -114,15 +114,15 @@ void server::handleNewConnection() {
 
 void server::serverRoutine() {
 
-	int num_ready = poll(&this->pollEvents[0], this->pollEvents.size(), 0);
+	int num_ready = poll(&pollEvents[0], pollEvents.size(), 0);
 	if (num_ready < 0) {
 		std::cout << "num_ready smaller 0 " << std::endl;
 		//throw pollNotWorking();
 	}
-	for (size_t i = 0; i < this->pollEvents.size(); ++i) {
+	for (size_t i = 0; i < pollEvents.size(); ++i) {
 		try{
-			if (this->pollEvents[i].revents == POLLIN) {
-				if (this->pollEvents[i].fd == this->serverSocket) {
+			if (pollEvents[i].revents == POLLIN) {
+				if (pollEvents[i].fd == serverSocket) {
 	//				std::cout << "new connection incoming" << std::endl;
 					handleNewConnection();
 	//				std::cout << "new connection accepted" << std::endl;
@@ -130,10 +130,15 @@ void server::serverRoutine() {
 					clients[i]->executeClientRequest();
 				}
 			}
-			if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) { //pollEvents[i].revents == 0 &&
-				clients[i]->executeClientResponse();
-				if (clients[i]->clientResponse->_allChunkSent) {
-					removeSocket(static_cast<int>(i));
+			if (pollEvents[i].revents == 0 && clients[i]->clientResponse != NULL) {
+				try {
+					clients[i]->executeClientResponse();
+					if (clients[i]->clientResponse->_allChunkSent) {
+						removeSocket(static_cast<int>(i));
+					}
+				}//pollEvents[i].revents == 0 &&
+				catch (std::exception &e){
+					std::cout << "caught exception of server" << e.what() <<  std::endl;
 				}
 				// if (clients[i].clientResponse->_allChunkSent) {
 				// 	removeSocket(static_cast<int>(i));
@@ -177,8 +182,6 @@ void server::runAllServers(char *configFilePath) {
 	conf.parseConfFile(configFilePath);
 	serverConf serverConfigs(conf);
 	std::vector<server *> servers;
-
-	std::cout << "rewritePath: " << serverConfigs._server[0].locations["/"].rewrite << std::endl;
 //	for (int i = 0; i < static_cast<int>(serverConfigs._server.size()); i++) {
 	for (int i = 0; i < serverConfigs._server.size(); i++) {
 		try{

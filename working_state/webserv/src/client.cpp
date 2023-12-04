@@ -58,7 +58,7 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 				clientPostRequest->writeBinaryToFile(_request);
 			}
 			catch (std::exception &e) {
-				std::cout << "caught exception of post Request" << std::endl;
+				std::cout << "caught exception of post Request " << e.what() << std::endl;
 			}
 			if (clientPostRequest->getAllChunksSent()) {
 				response *newResponse = new response("./html_files/uploadSuccessful.html", 201, serverConfig);
