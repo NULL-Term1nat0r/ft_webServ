@@ -41,11 +41,11 @@ public:
 	serverConf();
 	serverConf(Config conf);
 	~serverConf();
-
-	void	getServerConf(Config conf);
+	void		getServerConf(Config conf);
 	std::string getFileType(std::string filePath);
-	bool checkFileType(std::string fileExtension);
-	void constructFileTypeContainer();
+	bool 		checkFileType(std::string fileExtension);
+	void 		constructFileTypeContainer();
+	std::string	getErrorPage(int serverIndex, int errorCode);
 
 	class WrongPort : public std::exception
 	{
@@ -73,11 +73,6 @@ public:
 			virtual const char	*what() const throw();
 	};
 
-
-	void	iterate();
-	std::vector<std::string>		_validExtensions;
-	void							_setValidExtensions(std::map<std::string, std::vector<std::string> > globalContext);
-
 	int		  							_workerProcesses;
 	int									_workerConnections;
 	int									_scriptTimeout;
@@ -99,8 +94,7 @@ private:
 	void						_setServerValues(std::map<std::string, std::map<std::string, std::vector<std::string> > > server, std::vector<std::string> locations);
 	void						_serverValues(Config conf);
 	void						_indexFileNotExisting(Config conf);
-
-	void						initErrorPages(serverSettings &conf);
+	void						_initErrorPages(serverSettings &conf);
 	//*******************//
 	//*** server2.cpp ***//
 	//*******************//
@@ -125,6 +119,7 @@ private:
 	void						_setBackLog(std::map<std::string, std::vector<std::string> > globalContext);
 	void						_globalValues(Config conf);
 	void						_checkDuplicatePorts();
+	void						_defaultServer();
 };
 
 #endif

@@ -11,27 +11,26 @@ serverSettings::serverSettings() : locations(), port(0), serverName(""), errorPa
 serverSettings::~serverSettings() {}
 
 void serverConf::constructFileTypeContainer(){
-<<<<<<< HEAD
-	fileTypeContainer["html"] = "text/html";
-	fileTypeContainer["css"] = "text/css";
-	fileTypeContainer["py"] = "text/python";
-	fileTypeContainer["php"] = "text/php";
-	fileTypeContainer["jpg"] = "image/jpeg";
-	fileTypeContainer["jpeg"] = "image/jpeg";
-	fileTypeContainer["png"] = "image/png";
-	fileTypeContainer["gif"] = "image/gif";
-	fileTypeContainer["svg"] = "image/svg+xml";
-	fileTypeContainer["ico"] = "image/x-icon";
-	fileTypeContainer["mp3"] = "audio/mpeg";
-	fileTypeContainer["woff"] = "font/woff";
-	fileTypeContainer["woff2"] = "font/woff2";
-	fileTypeContainer["ttf"] = "font/ttf";
-	fileTypeContainer["otf"] = "font/otf";
-	fileTypeContainer["txt"] = "text/plain";
-	fileTypeContainer["pdf"] = "application/pdf";
-	fileTypeContainer["xml"] = "application/xml";
-	fileTypeContainer["tar"] = "application/x-tar";
-	fileTypeContainer["xpm"] = "image/xpm";
+    fileTypeContainer["html"] = "text/html";
+    fileTypeContainer["css"] = "text/css";
+    fileTypeContainer["py"] = "text/python";
+    fileTypeContainer["php"] = "text/php";
+    fileTypeContainer["jpg"] = "image/jpeg";
+    fileTypeContainer["jpeg"] = "image/jpeg";
+    fileTypeContainer["png"] = "image/png";
+    fileTypeContainer["gif"] = "image/gif";
+    fileTypeContainer["svg"] = "image/svg+xml";
+    fileTypeContainer["ico"] = "image/x-icon";
+    fileTypeContainer["mp3"] = "audio/mpeg";
+    fileTypeContainer["woff"] = "font/woff";
+    fileTypeContainer["woff2"] = "font/woff2";
+    fileTypeContainer["ttf"] = "font/ttf";
+    fileTypeContainer["otf"] = "font/otf";
+    fileTypeContainer["txt"] = "text/plain";
+    fileTypeContainer["pdf"] = "application/pdf";
+    fileTypeContainer["xml"] = "application/xml";
+    fileTypeContainer["tar"] = "application/x-tar";
+    fileTypeContainer["xpm"] = "image/xpm";
 }
 
 bool serverConf::checkFileType(std::string fileExtension) {
@@ -148,7 +147,7 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 	}
 }
 
-void	serverConf::initErrorPages(serverSettings &conf) {
+void	serverConf::_initErrorPages(serverSettings &conf) {
 	conf.errorPages[400] = "html_files/errorPages/error400.html";
 	conf.errorPages[403] = "html_files/errorPages/error403.html";
 	conf.errorPages[404] = "html_files/errorPages/error404.html";
@@ -159,18 +158,26 @@ void	serverConf::initErrorPages(serverSettings &conf) {
 	conf.errorPages[504] = "html_files/errorPages/error504.html";
 }
 
+void	serverConf::_defaultServer() {
+	serverSettings	conf;
+	conf.port = 80;
+	conf.serverName = "default_server";
+	conf.bodySize = 500000000;
+	_initErrorPages(conf);
+	_server.push_back(conf);
+}
+
 void	serverConf::getServerConf(Config conf) {
 	_globalValues(conf);
 	_serverValues(conf);
-	_checkDuplicatePorts();
-	if (_server.empty())
-		throw WrongAmount();
-	_indexFileNotExisting(conf);
-
-	for (size_t i = 0; i < _server.size(); i++) {
-		for (std::map<int, std::string>::iterator it = _server[i].errorPages.begin(); it != _server[i].errorPages.end(); it++) {
-			std::cout << it->first << " " << it->second << std::endl;
-		}
-		std::cout << std::endl;
+	if (_server.empty()) {
+		_defaultServer();
+		return ;
 	}
+	_checkDuplicatePorts();
+	_indexFileNotExisting(conf);
+}
+
+std::string	serverConf::getErrorPage(int serverIndex, int errorCode) {
+	return _server[serverIndex].errorPages[errorCode];
 }
