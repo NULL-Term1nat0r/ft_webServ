@@ -67,6 +67,7 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 				this->baseRequest = NULL;
 				delete clientPostRequest;
 				clientPostRequest = NULL;
+
 			}
 		}
 		return true;
@@ -135,7 +136,9 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 			return;
 		if (!this->baseRequest->checkPageMethod(method, this->baseRequest->getStringURL(), serverIndex, serverConfig)) {
 
-			response *newResponse = new response("./html_files/errorPages/error405.html", 405, serverConfig);
+			std::string test = serverConfig.getErrorPage(serverIndex, 405);
+			std::cout << "test: " << test << std::endl;
+			response *newResponse = new response(serverConfig.getErrorPage(serverIndex, 405), 405, serverConfig);
 			delete this->baseRequest;
 			clientResponse = newResponse;
 			return;

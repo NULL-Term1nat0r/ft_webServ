@@ -14,6 +14,7 @@
 
 postRequest::postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
 	parseFileName();
+	this->_isCgiScript = checkIfCgi();
 	parseFileExtension();
 	this->_firstChunkSent = false;
 	this->_allChunksSent = false;
@@ -139,6 +140,11 @@ void postRequest::parseFileName(){
 	int end = _baseRequest->getRequestString().find("\"", start);
 	this->_fileName = _baseRequest->getRequestString().substr(start, end - start);
 	std::cout << "fileName: " << _fileName << std::endl;
+}
+
+bool postRequest::checkIfCgi(){
+	if (_fileName.find(".php") != std::string::npos || _fileName.find(".py") != std::string::npos)
+		return true;
 }
 
 std::string postRequest::getBoundary() {

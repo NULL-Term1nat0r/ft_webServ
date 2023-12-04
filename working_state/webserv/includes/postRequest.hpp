@@ -45,7 +45,7 @@ private:
 
 
 	std::vector<uint8_t> 	_binaryData;
-
+	bool					_isCgiScript
 	bool					_multiFormData;
 	bool					_textData;
 	bool					_cgi;
@@ -64,6 +64,7 @@ public:
 	void parseDataType();
 	void parseCgi(std::string &data);
 	void parseFileName();
+	bool checkIfCgi();
 	void parseFileType();
 	void parseFileExtension();
 	std::string parseValue(std::string search, std::string source, std::string delimeter);

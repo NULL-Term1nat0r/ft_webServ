@@ -11,7 +11,6 @@ serverSettings::serverSettings() : locations(), port(0), serverName(""), errorPa
 serverSettings::~serverSettings() {}
 
 void serverConf::constructFileTypeContainer(){
-<<<<<<< HEAD
 	fileTypeContainer["html"] = "text/html";
 	fileTypeContainer["css"] = "text/css";
 	fileTypeContainer["py"] = "text/python";
@@ -148,15 +147,19 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 	}
 }
 
+std::string    serverConf::getErrorPage(int serverIndex, int errorCode) {
+	return _server[serverIndex].errorPages[errorCode];
+}
+
 void	serverConf::initErrorPages(serverSettings &conf) {
-	conf.errorPages[400] = "html_files/errorPages/error400.html";
-	conf.errorPages[403] = "html_files/errorPages/error403.html";
-	conf.errorPages[404] = "html_files/errorPages/error404.html";
-	conf.errorPages[405] = "html_files/errorPages/error405.html";
-	conf.errorPages[413] = "html_files/errorPages/error413.html";
-	conf.errorPages[415] = "html_files/errorPages/error415.html";
-	conf.errorPages[500] = "html_files/errorPages/error500.html";
-	conf.errorPages[504] = "html_files/errorPages/error504.html";
+	conf.errorPages[400] = "./html_files/errorPages/error400.html";
+	conf.errorPages[403] = "./html_files/errorPages/error403.html";
+	conf.errorPages[404] = "./html_files/errorPages/error404.html";
+	conf.errorPages[405] = "./html_files/errorPages/error405.html";
+	conf.errorPages[413] = "./html_files/errorPages/error413.html";
+	conf.errorPages[415] = "./html_files/errorPages/error415.html";
+	conf.errorPages[500] = "./html_files/errorPages/error500.html";
+	conf.errorPages[504] = "./html_files/errorPages/error504.html";
 }
 
 void	serverConf::getServerConf(Config conf) {

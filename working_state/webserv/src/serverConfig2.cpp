@@ -105,56 +105,56 @@ void	serverConf::_setBodySize(std::map<std::string, std::vector<std::string> > l
 
 void	serverConf::_setErrorPage400(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page400") != location.end() && location["error_page400"].size() > 0)
-		conf.errorPages[400] = "html_files" + location["error_page400"][0];
+		conf.errorPages[400] = "./html_files" + location["error_page400"][0];
 	if (!parsing::fileExists(conf.errorPages[400]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage403(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page403") != location.end() && location["error_page403"].size() > 0)
-		conf.errorPages[403] = "html_files" + location["error_page403"][0];
+		conf.errorPages[403] = "./html_files" + location["error_page403"][0];
 	if (!parsing::fileExists(conf.errorPages[403]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage404(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page404") != location.end() && location["error_page404"].size() > 0)
-		conf.errorPages[404] = "html_files" + location["error_page404"][0];
+		conf.errorPages[404] = "./html_files" + location["error_page404"][0];
 	if (!parsing::fileExists(conf.errorPages[404]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage405(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page405") != location.end() && location["error_page405"].size() > 0)
-		conf.errorPages[405] = "html_files" + location["error_page405"][0];
+		conf.errorPages[405] = "./html_files" + location["error_page405"][0];
 	if (!parsing::fileExists(conf.errorPages[405]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage413(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page413") != location.end() && location["error_page413"].size() > 0)
-		conf.errorPages[413] = "html_files" + location["error_page413"][0];
+		conf.errorPages[413] = "./html_files" + location["error_page413"][0];
 	if (!parsing::fileExists(conf.errorPages[413]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage415(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page415") != location.end() && location["error_page415"].size() > 0)
-		conf.errorPages[415] = "html_files" + location["error_page415"][0];
+		conf.errorPages[415] = "./html_files" + location["error_page415"][0];
 	if (!parsing::fileExists(conf.errorPages[415]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage500(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page500") != location.end() && location["error_page500"].size() > 0)
-		conf.errorPages[500] = "html_files" + location["error_page500"][0];
+		conf.errorPages[500] = "./html_files" + location["error_page500"][0];
 	if (!parsing::fileExists(conf.errorPages[500]))
 		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage504(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page504") != location.end() && location["error_page504"].size() > 0)
-		conf.errorPages[504] = "html_files" + location["error_page504"][0];
+		conf.errorPages[504] = "./html_files" + location["error_page504"][0];
 	if (!parsing::fileExists(conf.errorPages[504]))
 		throw PathToErrorPageWrong();
 }
