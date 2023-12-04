@@ -19,7 +19,6 @@ typedef struct LocationStruc
 	bool						allowDelete;
 	std::string					rewrite;
 	std::string					autoindex;
-	std::string					root;
 	std::string					index;
 	std::vector<std::string>	cgi;
 	bool						indexBool;
@@ -50,23 +49,28 @@ public:
 
 	class WrongPort : public std::exception
 	{
-	public:
-		virtual const char	*what() const throw();
+		public:
+			virtual const char	*what() const throw();
 	};
 	class WrongAmount : public std::exception
 	{
-	public:
-		virtual const char	*what() const throw();
+		public:
+			virtual const char	*what() const throw();
 	};
 	class PortAlreadyInUse : public std::exception
 	{
-	public:
-		virtual const char	*what() const throw();
+		public:
+			virtual const char	*what() const throw();
 	};
 	class WrongCgiExtension : public std::exception
 	{
-	public:
-		virtual const char	*what() const throw();
+		public:
+			virtual const char	*what() const throw();
+	};
+	class PathToErrorPageWrong : public std::exception
+	{
+		public:
+			virtual const char	*what() const throw();
 	};
 
 
@@ -74,16 +78,14 @@ public:
 	std::vector<std::string>		_validExtensions;
 	void							_setValidExtensions(std::map<std::string, std::vector<std::string> > globalContext);
 
-	int		  					_workerProcesses;//could be auto;
-	int							_workerConnections; // maxClients
-	int							_scriptTimeout;
-	int							_clientTimeout;
-	int							_buffSize;
-	int							_backlog; //how many cleints at the same time
-	std::vector<serverSettings>	_server;
-
-	std::map<std::string, std::string> fileTypeContainer;
-
+	int		  							_workerProcesses;
+	int									_workerConnections;
+	int									_scriptTimeout;
+	int									_clientTimeout;
+	int									_buffSize;
+	int									_backlog;
+	std::vector<serverSettings>			_server;
+	std::map<std::string, std::string>	fileTypeContainer;
 private:
 	//*******************//
 	//*** server.cpp ***//
@@ -91,27 +93,25 @@ private:
 	void						_setCgi(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf);
 	void						_setRewrite(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf);
 	void						_setAutoIndex(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf);
-	void						_setRoot(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings&conf);
 	void						_setIndex(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf);
 	void						_setAllowMethods(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf);
 	void						_setLocationServerValues(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf, size_t i);
 	void						_setServerValues(std::map<std::string, std::map<std::string, std::vector<std::string> > > server, std::vector<std::string> locations);
 	void						_serverValues(Config conf);
 	void						_indexFileNotExisting(Config conf);
+
+	void						initErrorPages(serverSettings &conf);
 	//*******************//
 	//*** server2.cpp ***//
 	//*******************//
 	void						_setErrorPage400(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
+	void						_setErrorPage403(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage404(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage405(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
-	void						_setErrorPage408(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage413(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage415(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage500(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setErrorPage504(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
-	void						_setErrorPage505(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
-
-
 	void						_setErrorPages(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setServerName(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);
 	void						_setPort(std::map<std::string, std::vector<std::string> > location, serverSettings &conf);

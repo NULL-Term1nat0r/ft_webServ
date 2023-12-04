@@ -1,7 +1,7 @@
 
 #include "../includes/serverConf.hpp"
 
-LocationStruc::LocationStruc() : allowGet(false), allowPost(false), allowDelete(false), rewrite(""), autoindex(""), root(""), index(""), cgi(), indexBool(true) {}
+LocationStruc::LocationStruc() : allowGet(false), allowPost(false), allowDelete(false), rewrite(""), autoindex(""), index(""), cgi(), indexBool(true) {}
 
 LocationStruc::~LocationStruc(){}
 
@@ -11,6 +11,7 @@ serverSettings::serverSettings() : locations(), port(0), serverName(""), errorPa
 serverSettings::~serverSettings() {}
 
 void serverConf::constructFileTypeContainer(){
+<<<<<<< HEAD
 	fileTypeContainer["html"] = "text/html";
 	fileTypeContainer["css"] = "text/css";
 	fileTypeContainer["py"] = "text/python";
@@ -38,8 +39,6 @@ bool serverConf::checkFileType(std::string fileExtension) {
 		return false;
 	return true;
 }
-
-
 
 std::string serverConf::getFileType(std::string filePath){
 	std::string extension = parsing::getFileExtension(filePath);
@@ -87,10 +86,6 @@ void	serverConf::_setAutoIndex(std::map<std::string, std::vector<std::string> > 
 		conf.locations[locationName].autoindex = location["autoindex"][0];
 }
 
-void	serverConf::_setRoot(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
-	if (location.find("root") != location.end() && location["root"].size() > 0)
-		conf.locations[locationName].root = location["root"][0];
-}
 
 void	serverConf::_setIndex(std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf) {
 	if (location.find("index") != location.end() && location["index"].size() > 0)
@@ -103,8 +98,8 @@ void	serverConf::_setLocationServerValues(std::map<std::string, std::vector<std:
 	locationName = locationName.substr(8, locationName.size() - 8);
 	conf.locations[locationName] = LocationStruc();
 	void (serverConf::*locationFunc[]) (std::map<std::string, std::vector<std::string> > location, std::string locationName, serverSettings &conf)
-	= {&serverConf::_setCgi, &serverConf::_setRewrite, &serverConf::_setAutoIndex, &serverConf::_setRoot, &serverConf::_setIndex, &serverConf::_setAllowMethods};
-	for (size_t j = 0; j < 6; j++)
+	= {&serverConf::_setCgi, &serverConf::_setRewrite, &serverConf::_setAutoIndex, &serverConf::_setIndex, &serverConf::_setAllowMethods};
+	for (size_t j = 0; j < 5; j++)
 		(this->*locationFunc[j])(location, locationName, conf);
 }
 
@@ -140,10 +135,8 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 	int			fileDescriptor;
 	for (int i = 0; i < _server.size(); i++) {
 		for (std::map<std::string, LocationStruc>::iterator it = _server[i].locations.begin(); it != _server[i].locations.end(); it++) {
-			if (it->first != "/" && it->second.rewrite == "")
+			if (it->first != "/")
 				file = "html_files" + it->first + "/" + it->second.index;
-			else if (it->second.rewrite != "")
-				file = "html_files" + it->second.rewrite + "/" + it->second.index;
 			else
 				file = "html_files" + it->first + it->second.index;
 			fileDescriptor = open(file.c_str(), O_RDONLY);
@@ -155,6 +148,17 @@ void	serverConf::_indexFileNotExisting(Config conf) {
 	}
 }
 
+void	serverConf::initErrorPages(serverSettings &conf) {
+	conf.errorPages[400] = "html_files/errorPages/error400.html";
+	conf.errorPages[403] = "html_files/errorPages/error403.html";
+	conf.errorPages[404] = "html_files/errorPages/error404.html";
+	conf.errorPages[405] = "html_files/errorPages/error405.html";
+	conf.errorPages[413] = "html_files/errorPages/error413.html";
+	conf.errorPages[415] = "html_files/errorPages/error415.html";
+	conf.errorPages[500] = "html_files/errorPages/error500.html";
+	conf.errorPages[504] = "html_files/errorPages/error504.html";
+}
+
 void	serverConf::getServerConf(Config conf) {
 	_globalValues(conf);
 	_serverValues(conf);
@@ -162,4 +166,11 @@ void	serverConf::getServerConf(Config conf) {
 	if (_server.empty())
 		throw WrongAmount();
 	_indexFileNotExisting(conf);
+
+	for (size_t i = 0; i < _server.size(); i++) {
+		for (std::map<int, std::string>::iterator it = _server[i].errorPages.begin(); it != _server[i].errorPages.end(); it++) {
+			std::cout << it->first << " " << it->second << std::endl;
+		}
+		std::cout << std::endl;
+	}
 }

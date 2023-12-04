@@ -16,7 +16,7 @@ const char	*serverConf::WrongPort::what() const throw() {
 }
 
 const char	*serverConf::WrongAmount::what() const throw() {
-	return "Amount for the Context is not enough.";
+	return "Amount for the Context is either too much or not enough.";
 }
 
 const char	*serverConf::PortAlreadyInUse::what() const throw() {
@@ -26,6 +26,10 @@ const char	*serverConf::WrongCgiExtension::what() const throw() {
 	return "The file extension for cgi is not correct or not available for the webserver.";
 }
 
+const char	*serverConf::PathToErrorPageWrong::what() const throw() {
+	return "The path to the error page is wrong.";
+}
+
 void	serverConf::_setBackLog(std::map<std::string, std::vector<std::string> > globalContext) {
 	if (globalContext.find("backlog") != globalContext.end() && globalContext["backlog"].size() > 0)
 		_backlog = atoi(globalContext["backlog"][0].c_str());
@@ -33,8 +37,6 @@ void	serverConf::_setBackLog(std::map<std::string, std::vector<std::string> > gl
 		throw WrongAmount();
 }
 
-
-//check Timeouts!!!!!
 void	serverConf::_setClientTimeout(std::map<std::string, std::vector<std::string> > globalContext) {
 	if (globalContext.find("client_timeout") != globalContext.end() && globalContext["client_timeout"].size() > 0)
 		_clientTimeout = atoi(globalContext["client_timeout"][0].c_str());
@@ -81,6 +83,7 @@ void	serverConf::_setPort(std::map<std::string, std::vector<std::string> > locat
 }
 
 void	serverConf::_setGlobalServerValues(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
+	initErrorPages(conf);
 	void (serverConf::*serverFunc[]) (std::map<std::string, std::vector<std::string> > location, serverSettings &conf) = {&serverConf::_setBodySize, &serverConf::_setPort, &serverConf::_setServerName, &serverConf::_setErrorPages};
 	for (size_t i = 0; i < 4; i++)
 		(this->*serverFunc[i])(location, conf);
@@ -102,53 +105,64 @@ void	serverConf::_setBodySize(std::map<std::string, std::vector<std::string> > l
 
 void	serverConf::_setErrorPage400(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page400") != location.end() && location["error_page400"].size() > 0)
-		conf.errorPages[400] = location["error_page400"][0];
+		conf.errorPages[400] = "html_files" + location["error_page400"][0];
+	if (!parsing::fileExists(conf.errorPages[400]))
+		throw PathToErrorPageWrong();
+}
+
+void	serverConf::_setErrorPage403(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
+	if (location.find("error_page403") != location.end() && location["error_page403"].size() > 0)
+		conf.errorPages[403] = "html_files" + location["error_page403"][0];
+	if (!parsing::fileExists(conf.errorPages[403]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage404(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page404") != location.end() && location["error_page404"].size() > 0)
-		conf.errorPages[404] = location["error_page404"][0];
+		conf.errorPages[404] = "html_files" + location["error_page404"][0];
+	if (!parsing::fileExists(conf.errorPages[404]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage405(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page405") != location.end() && location["error_page405"].size() > 0)
-		conf.errorPages[405] = location["error_page405"][0];
-}
-
-void	serverConf::_setErrorPage408(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
-	if (location.find("error_page408") != location.end() && location["error_page408"].size() > 0)
-		conf.errorPages[408] = location["error_page408"][0];
+		conf.errorPages[405] = "html_files" + location["error_page405"][0];
+	if (!parsing::fileExists(conf.errorPages[405]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage413(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page413") != location.end() && location["error_page413"].size() > 0)
-		conf.errorPages[413] = location["error_page413"][0];
+		conf.errorPages[413] = "html_files" + location["error_page413"][0];
+	if (!parsing::fileExists(conf.errorPages[413]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage415(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page415") != location.end() && location["error_page415"].size() > 0)
-		conf.errorPages[415] = location["error_page415"][0];
+		conf.errorPages[415] = "html_files" + location["error_page415"][0];
+	if (!parsing::fileExists(conf.errorPages[415]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage500(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page500") != location.end() && location["error_page500"].size() > 0)
-		conf.errorPages[500] = location["error_page500"][0];
+		conf.errorPages[500] = "html_files" + location["error_page500"][0];
+	if (!parsing::fileExists(conf.errorPages[500]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPage504(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
 	if (location.find("error_page504") != location.end() && location["error_page504"].size() > 0)
-		conf.errorPages[504] = location["error_page504"][0];
-}
-
-void	serverConf::_setErrorPage505(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
-	if (location.find("error_page505") != location.end() && location["error_page505"].size() > 0)
-		conf.errorPages[505] = location["error_page505"][0];
+		conf.errorPages[504] = "html_files" + location["error_page504"][0];
+	if (!parsing::fileExists(conf.errorPages[504]))
+		throw PathToErrorPageWrong();
 }
 
 void	serverConf::_setErrorPages(std::map<std::string, std::vector<std::string> > location, serverSettings &conf) {
-	void (serverConf::*errorPageFunc[]) (std::map<std::string, std::vector<std::string> > location, serverSettings &conf) = {&serverConf::_setErrorPage400, &serverConf::_setErrorPage404, &serverConf::_setErrorPage405,
-		&serverConf::_setErrorPage408, &serverConf::_setErrorPage413, &serverConf::_setErrorPage415, &serverConf::_setErrorPage500, &serverConf::_setErrorPage504, &serverConf::_setErrorPage505};
-	for (size_t i = 0; i < 9; i++)
+	void (serverConf::*errorPageFunc[]) (std::map<std::string, std::vector<std::string> > location, serverSettings &conf) = {&serverConf::_setErrorPage400, &serverConf::_setErrorPage403, &serverConf::_setErrorPage404, &serverConf::_setErrorPage405,
+		&serverConf::_setErrorPage413, &serverConf::_setErrorPage415, &serverConf::_setErrorPage500, &serverConf::_setErrorPage504};
+	for (size_t i = 0; i < 8; i++)
 		(this->*errorPageFunc[i])(location, conf);
 }
 
