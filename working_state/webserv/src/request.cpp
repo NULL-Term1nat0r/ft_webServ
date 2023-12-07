@@ -3,144 +3,157 @@
 request::request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, int serverIndex) : _serverConfig(serverConfig), _serverIndex(serverIndex){
 
 	this->_request = parsing::vectorToString(clientRequest, 2000);
-	setDefaultValues();
-	parseRequest();
+	std::cout << yellow <<  _request << reset << std::endl;
+	this->_get = isGetMethod();
+	this->_post = isPostMethod();
+	this->_delete = isDeleteMethod();
+	this->methodString = getMethodString();
+	this->url = parseUrl();
+	parsing::decodeUrl(url);
+	this->fileName = parseFileName();
+	this->_cgi = isCgi();
+	this->_aliveConnection = isAliveConnection();
+	this->_closeConnection = isCloseConnection();
+	this->page = parsing::constructPage(url);
+	std::cout << blue << "page: " << page << reset << std::endl;
+	this->page = checkRewrite();
+	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, page);
+	this->methodIsValid = isMethodConfigured();
+	printRequest();
 }
 
 request::~request(){
 }
 
-void request::setDefaultValues() {
-	this->_URL = false;
-	this->_validRequest = false;
-	this->_httpProtocol = true;
-	this->_aliveConnection = false;
-	this->_closeConnection = false;
-	this->_get = false;
-	this->_post = false;
-	this->_delete = false;
+bool request::isGetMethod() {
+	return _request.find("GET") != std::string::npos;
 }
 
-
-void request::parseRequest() {
-	parseURL();
-	checkMethods();
-	this->_cgi = checkCgi(this->_stringURL);
-	this->_stringHttpProtocol = parsing::returnValue("HTTP/", this->_request, "\r");
-	if (parsing::returnValue("Connection: ", this->_request, "\r") == "keep-alive")
-		this->_aliveConnection = true;
-	else if (parsing::returnValue("Connection: ", this->_request, "\r") == "close")
-		this->_closeConnection = true;
+bool request::isPostMethod() {
+	return _request.find("POST") != std::string::npos;
 }
 
-bool request::checkCgi(std::string url) {
-	if (url == "/")
-		return false;
-	if (_get) {
-		if (url.find(".php") != std::string::npos)
-			return true;
-		if (url.find(".py") != std::string::npos)
-			return true;
+bool request::isDeleteMethod() {
+	return _request.find("DELETE") != std::string::npos;
+}
+
+bool request::isAliveConnection() {
+	return _request.find("Connection: keep-alive") != std::string::npos;
+}
+
+bool request::isCloseConnection() {
+	return _request.find("Connection: close") != std::string::npos;
+}
+
+std::string request::parseFileName(){
+	if (_get){
+		if (url.find('?') != std::string::npos)
+			return url.substr(url.find_last_of('/') + 1, url.find('?') - url.find_last_of('/') - 1);
+		return url.substr(url.find_last_of('/'));
 	}
-	return false;
+	if (_post)
+		return parsing::returnValue("filename=", _request, "\r");
+	return "";
 }
 
-void request::parseURL(){
-	if (this->_request.find("GET") != std::string::npos)
-		this->_stringURL = parsing::returnValue("GET", this->_request,  " ");
-	else if (this->_request.find("POST") != std::string::npos)
-		this->_stringURL = parsing::returnValue("POST", this->_request,  " ");
-	else if (this->_request.find("DELETE") != std::string::npos)
-		this->_stringURL = parsing::returnValue("DELETE", this->_request,  " ");
-	parsing::decodeUrl(this->_stringURL);
-}
-
-std::string request::getMethodString(){
-	if (getGetMethod())
+std::string request::getMethodString() {
+	if (_get)
 		return "GET";
-	else if (getPostMethod())
+	else if (_post)
 		return "POST";
-	else if (getDeleteMethod())
+	else if (_delete)
 		return "DELETE";
 	return "";
 }
 
-void request::checkMethods(){
-	if (this->_request.find("GET") != std::string::npos){
-		this->_get = true;
-	}
-	if (this->_request.find("POST") != std::string::npos){
-		this->_post = true;
-	}
-	if (this->_request.find("DELETE") != std::string::npos){
-		this->_delete = true;
-	}
+bool request::isCgi(){
+	if (_get)
+		return url.find(".php") != std::string::npos || url.find(".py") != std::string::npos;
+	if (_post)
+		return fileName.find(".php") != std::string::npos || fileName.find(".py") != std::string::npos;
 }
 
-void request::validateRequest(){
-	int valid = 0;
-	if (this->_get || this->_post || this->_delete)
-		valid++;
-	if (this->_URL)
-		valid++;
-	if (this->_stringHttpProtocol == "1.1" || this->_stringHttpProtocol == "1.0")
-		valid++;
-	if (this->_aliveConnection || this->_closeConnection)
-		valid++;
-	if (valid == 4)
-		this->_validRequest = true;
-	else
-		this->_validRequest = false;
+std::string request::getRewrite(std::string page){
+	return _serverConfig._server[_serverIndex].locations[page].rewrite;
+}
+
+std::string request::checkRewrite() {
+	std::string tempPage = page;
+	while (_serverConfig._server[_serverIndex].locations[tempPage].rewrite != "") {
+		url = getRewrite(tempPage);
+		tempPage = parsing::constructPage(url);
+	}
+	return tempPage;
+}
+
+std::string request::parseUrl() {
+	std::string method = getMethodString();
+	if (this->_request.find(method) != std::string::npos)
+		return parsing::returnValue(method, this->_request, " ");
+	return "";
 }
 
 void request::printRequest(){
-	std::cout << "alive connection : " << getAliveConnection() << std::endl;
-	std::cout << "close connection : " << getCloseConnection() << std::endl;
-	std::cout << "URL : " << getURL() << std::endl;
-	std::cout << "valid request : " << getValidRequest() << std::endl;
+	std::cout << "alive connection : " << _aliveConnection << std::endl;
+	std::cout << "close connection : " << _closeConnection << std::endl;
+	std::cout << "method string : " << methodString << std::endl;
+	std::cout << "method is valid : " << methodIsValid << std::endl;
+	std::cout << "page : " << page << std::endl;
+	std::cout << "is page configured : " << isPageConfigured << std::endl;
+	std::cout << "is cgi : " << _cgi << std::endl;
+	std::cout << "is get : " << _get << std::endl;
+	std::cout << "is post : " << _post << std::endl;
+	std::cout << "is delete : " << _delete << std::endl;
+	std::cout << "url : " << url << std::endl;
 }
 
+bool request::isMethodConfigured(){
+	if (!isPageConfigured)
+		return true;
+	if (_serverConfig._server[_serverIndex].locations.empty())
+		return true;
+	if (_get)
+		return _serverConfig._server[_serverIndex].locations[page].allowGet;
+	if (_post)
+		return _serverConfig._server[_serverIndex].locations[page].allowPost;
+	if (_delete)
+		return _serverConfig._server[_serverIndex].locations[page].allowDelete;
+	return false;
+}
 //_serverConfig._server[_serverIndex].locations[_stringURL.substr(pos, pos2)].allowGet)
 
-bool request::checkPageMethod(std::string method, std::string url, int _serverIndex, serverConf &_serverConfig){
-	std::string page = parsing::returnPage(url);
-	std::cout << "pahge string in checkPageMethod: " << page << std::endl;
-	if (_serverConfig._server[_serverIndex].locations.empty()){
-		std::cout << "locations empty\n";
-		return true;
-	}
-		return true;
-//	std::cout << red << "url: " << url << reset << std::endl; // "/random
-	if (page != "/")
-		page = "/" + page;
-	if (page == "")
-		return true;
-	if (method == "GET" && _serverConfig._server[_serverIndex].locations[page].allowGet)
-		return true;
-	else if (method == "POST" && _serverConfig._server[_serverIndex].locations[page].allowPost)
-		return true;
-	else if (method == "DELETE" && _serverConfig._server[_serverIndex].locations[page].allowDelete)
-		return true;
-	else
-		return false;
-}
+//bool request::checkPageMethod(std::string method, std::string url, int _serverIndex, serverConf &_serverConfig){
+//	std::string page = parsing::returnPage(url);
+//	std::cout << "pahge string in checkPageMethod: " << page << std::endl;
+//	if (_serverConfig._server[_serverIndex].locations.empty()){
+//		std::cout << "locations empty\n";
+//		return true;
+//	}
+////	std::cout << red << "url: " << url << reset << std::endl; // "/random
+//	if (page != "/")
+//		page = "/" + page;
+//	if (page == "")
+//		return true;
+//	if (method == "GET" && _serverConfig._server[_serverIndex].locations[page].allowGet)
+//		return true;
+//	else if (method == "POST" && _serverConfig._server[_serverIndex].locations[page].allowPost)
+//		return true;
+//	else if (method == "DELETE" && _serverConfig._server[_serverIndex].locations[page].allowDelete)
+//		return true;
+//	else
+//		return false;
+//}
 
 
-
-bool request::getValidRequest(){
-	return this->_validRequest;
-}
 bool request::getAliveConnection(){
 	return this->_aliveConnection;
 }
 bool request::getCloseConnection(){
 	return this->_closeConnection;
 }
-bool request::getURL(){
-	return this->_URL;
-}
+
 std::string request::getStringURL() {
-	return this->_stringURL;
+	return this->url;
 }
 
 std::string &request::getRequestString(){

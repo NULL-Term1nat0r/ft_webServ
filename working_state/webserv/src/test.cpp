@@ -10,16 +10,13 @@
 //	std::cout << activated << std::endl;
 //}
 
-
+bool checkString(std::string string){
+	return string.find("test") != std::string::npos;
+}
 
 
 //int main()
 //{
-//	std::cout << "page: " << parsing::constructPage("/iuhihoihn/iubibib") << std::endl;
-//	std::vector<std:: string> result = parsing::split("/iuhihoihn/iubibib/oihoio.html", '/');
-//	std::cout << "page: " << result[0] << std::endl;
-//	std::cout << "page: " << result[1] << std::endl;
-//	std::cout << "page: " << result[2] << std::endl;
-//
+//	std::cout << "bool: " << checkString("arfgafasfa test eggafafasgadrgag") << std::endl;
 //	return 0;
 //}

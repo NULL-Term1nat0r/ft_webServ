@@ -87,7 +87,6 @@ bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 				this->baseRequest = NULL;
 				delete clientPostRequest;
 				clientPostRequest = NULL;
-
 			}
 		}
 		return true;
@@ -149,13 +148,12 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 	if (this->clientGetRequest == NULL && this->clientPostRequest == NULL && this->clientDeleteRequest == NULL && this->clientCgiRequest == NULL) {
 //		std::cout << "----------------------------------NEW-----REQUEST-------------------------------------------\n" << parsing::vectorToString(_request, 1500) <<std::endl;
 		this->baseRequest = new request(_request, serverConfig, serverIndex);
-//		std::cout << yellow << this->baseRequest->getRequestString().substr(0, 500) << reset << std::endl;
 
 		std::string method  = this->baseRequest->getMethodString();
 		std::cout << "method: " << method << std::endl;
 		if (method == "")
 			return;
-		if (!this->baseRequest->checkPageMethod(method, this->baseRequest->getStringURL(), serverIndex, serverConfig)) {
+		if (!this->baseRequest->methodIsValid) {
 
 			std::string test = serverConfig.getErrorPage(serverIndex, 405);
 			std::cout << "test: " << test << std::endl;

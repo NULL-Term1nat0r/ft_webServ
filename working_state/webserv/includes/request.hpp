@@ -18,34 +18,45 @@
 
 class request {
 private:
-	bool _validRequest;
-
-	bool _get;
-	bool _post;
-	bool _delete;
-	bool _URL;
-	bool _cgi;
-	bool _httpProtocol;
-
-	bool _aliveConnection;
-	bool _closeConnection;
-
-	serverConf &_serverConfig;
-	int _serverIndex;
-
-	std::string _stringURL;
-	std::string _stringHttpProtocol;
-
-	std::string _request;
-	std::string filePath;
 
 
 public:
 	explicit request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, int serverIndex);
 	virtual ~request();
 
-	bool getValidRequest();
+	bool isPageConfigured;
+	bool isPageValid;
+	bool _get;
+	bool _post;
+	bool _delete;
+	bool methodIsValid;
+	bool _cgi;
 
+	bool _aliveConnection;
+	bool _closeConnection;
+
+	serverConf &_serverConfig;
+	int _serverIndex;
+	std::string fileName;
+	std::string methodString;
+	std::string page;
+	std::string url;
+	std::string _request;
+	std::string filePath;
+
+	std::string parseFileName();
+	std::string checkRewrite();
+	std::string getRewrite(std::string page);
+	bool isCgi();
+	bool isAliveConnection();
+	bool isCloseConnection();
+	bool isMethodConfigured();
+
+
+
+	bool isGetMethod();
+	bool isPostMethod();
+	bool isDeleteMethod();
 
 	bool getGetMethod();
 	bool getPostMethod();
@@ -60,10 +71,9 @@ public:
 	std::string getReferer();
 	std::string &getRequestString();
 	bool getCgiMethod();
-	static bool checkPageMethod(std::string method, std::string url, int serverIndex, serverConf &serverConfig);
 	void checkMethods();
 	std::string getMethodString();
-	void parseURL();
+	std::string parseUrl();
 
 	bool checkCgi(std::string url);
 

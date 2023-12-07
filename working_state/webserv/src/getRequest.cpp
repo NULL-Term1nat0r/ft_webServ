@@ -21,13 +21,13 @@ getRequest::getRequest(request *baseRequest, serverConf &serverConfig, int serve
 	this->autoIndexActivated = true;
 	this->indexPageExists = true;
 	this->url = _baseRequest->getStringURL();
+	std::cout << "url = " << url << std::endl;
 	checkRewrite();
 	this->page = parsing::constructPage(url);
 	this->isFile = parsing::fileExists(("./html_files" + url).c_str());
 	this->isFolder = parsing::folderExists(("./html_files" + url).c_str());
-	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, page);
-	std::cout << red << "isPageConfigured = " << isPageConfigured << reset << std::endl;
-	if (isPageConfigured){
+	std::cout << red << "isPageConfigured = " << _baseRequest->isPageConfigured << reset << std::endl;
+	if (_baseRequest->isPageConfigured){
 		this->indexPageExists = _serverConfig._server[serverIndex].locations[page].indexBool;
 		this->autoIndexActivated = _serverConfig._server[serverIndex].locations[page].autoindex == "on";
 	}
@@ -40,7 +40,7 @@ getRequest::~getRequest() {}
 std::string getRequest::createFilePath() {
 	std::cout << "createFilePath activated\n";
 
-	if (!isPageConfigured)
+	if (!_baseRequest->isPageConfigured)
 		return NonConfiguredPage();
 
 	if (isFile){
@@ -50,13 +50,16 @@ std::string getRequest::createFilePath() {
 	if (isFolder){
 		std::cout << "isFolder" << std::endl;
 		if (autoIndexActivated && indexPageExists){
+			std::cout << "autoIndexActivated && indexPageExists" << std::endl;
 				return constructFolderPath();
 		}
 		else if (autoIndexActivated && !indexPageExists) {
+			std::cout << "autoIndexActivated && !indexPageExists" << std::endl;
 			statusCode = 619;
 			return constructFolderPath();
 		}
 		else {
+			std::cout << "else" << std::endl;
 			statusCode = 403;
 			return parsing::getErrorPagePath(403);
 		}
@@ -82,7 +85,7 @@ std::string getRequest::NonConfiguredPage() {
 }
 
 std::string getRequest::constructFolderPath() {
-	return "html_files" + url + _serverConfig._server[serverIndex].locations[page].index;
+	return "html_files" + url + "/" + _serverConfig._server[serverIndex].locations[page].index;
 }
 
 std::string getRequest::constructFilePath() {

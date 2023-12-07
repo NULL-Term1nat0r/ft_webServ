@@ -10,9 +10,6 @@ print("<html>")
 print("<head><title>CGI Example</title></head>")
 print("<body>")
 
-
-lol
-
 if name:
     print(f"<h1>Hello, {name}!</h1>")
 else:

@@ -27,11 +27,14 @@ private:
 	std::string _tempFile;
 	std::string _workingDirectory;
 	int _fileDescriptor;
+	std::string _queryString;
+	std::string _extension;
 	std::string _query;
 	std::string _execExtension;
 	std::string _execPath;
 	std::string _cgiFilePath;
 	std::string _returnFilePath;
+	bool _hasQueryString;
 	int	_errorCode;
 	bool fileIsReady;
 	bool _isError;
@@ -43,13 +46,26 @@ public:
 	static bool _errorSignal;
 	int statusCode;
 	bool cgiCheckLanguage() const;
-	bool checkExtensionServerConfig(std::string extension);
+	bool checkExtensionServerConfig();
 	bool cgiValidExtension(std::string url);
 	bool createTemporaryFile();
-	bool executeCgi();
+	void executeCgi();
+
+
+	std::string parseExtension();
+	std::string setExecExtension();
+	std::string createWorkingDirectoryPath();
+	std::string createExecPath();
+	std::string createTempPath();
+	std::string createQueryString();
+	std::string parseGetRequestPage();
+	std::string parsePostRequestPage();
+	bool checkQueryString();
+	bool prepareExecution();
+	void printCgiRequest();
 
 	std::string constructScriptPage(std::vector<std::string> &folderContainer);
-	void setScriptPage();
+	std::string setScriptPage();
 
 	bool inputCheck();
 	static void handleAlarmSignal(int signal);

@@ -73,7 +73,7 @@ void postRequest::handleFirstChunk(std::vector<uint8_t> &data){
 	if (file.is_open()) {
 		std::vector<uint8_t> binaryData(data.begin() + boundaryPos, data.end());
 		if (static_cast<size_t>(this->_contentLength) <= data.size()){
-			checkLastChunk(data, this->_boundary);
+			checkLastChunk(binaryData, this->_boundary);
 			std::cout << "size of data: " << data.size() << std::endl;
 			std::cout << " everything is in one chunk\n";
 			this->_allChunksSent = true;

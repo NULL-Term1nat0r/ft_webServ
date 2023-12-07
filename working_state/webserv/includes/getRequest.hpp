@@ -45,7 +45,6 @@ public:
 	int statusCode;
 	bool isFile;
 	bool isFolder;
-	bool isPageConfigured;
 	bool indexPageExists;
 	bool autoIndexActivated;
 
@@ -55,8 +54,8 @@ public:
 	int serverIndex;
 	bool redirection;
 	bool autoIndexListing;
-	std::string url;
 	std::string page;
+	std::string url;
 
 	void  checkRewrite();
 	std::string checkFolderPath(std::string url);
