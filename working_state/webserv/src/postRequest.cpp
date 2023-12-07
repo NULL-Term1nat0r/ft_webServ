@@ -45,7 +45,7 @@ void postRequest::parseFileExtension() {
 void postRequest::writeBinaryToFile(std::vector<uint8_t> &data){
 
 	if (!_firstChunkSent) {
-		std::cout << "request headers: " << _baseRequest->getRequestString() << std::endl;
+		std::cout << yellow << _baseRequest->getRequestString() << reset << std::endl;
 		handleFirstChunk(data);
 	}
 	if (_firstChunkSent && static_cast<size_t>(_contentLength - _dataRecieved) > data.size()) { //chunks after first chunk

@@ -31,7 +31,6 @@
 
 class postRequest {
 private:
-	request *_baseRequest;
 	serverConf &_serverConfig;
 	int serverIndex;
 
@@ -58,7 +57,7 @@ public:
 	explicit postRequest(request *baseRequest, serverConf &serverConfig, int serverIndex);
 	~postRequest();
 
-
+	request *_baseRequest;
 	void parseBoundary(std::string &data);
 	void parseContentLength(std::string &data);
 	void parseDataType();

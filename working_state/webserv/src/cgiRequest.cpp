@@ -15,11 +15,7 @@
 bool cgiRequest::_errorSignal = false;
 
 
-cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {
-	_cgiPath = "";
-	_query = "";
-	_errorCode = 200;		// set to 200 for no error. or 201
-	_isError = false;
+cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serverIndex) : _baseRequest(baseRequest), _serverConfig(serverConfig), serverIndex(serverIndex) {// set to 200 for no error. or 201
 	fileIsReady = false;
 	_cgiFilePath = "";
 	_returnFilePath = "";

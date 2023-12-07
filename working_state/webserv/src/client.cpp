@@ -73,6 +73,17 @@ void server::client::executeClientRequest(){
 
 bool server::client::checkPostRequest(std::vector<uint8_t> _request) {
 	if  (this->clientPostRequest != NULL) {
+		if (clientPostRequest->_baseRequest->_cgi) {
+			std::cout << "cgi post request incoming\n";
+			cgiRequest newCgiRequest = cgiRequest(clientPostRequest->_baseRequest, serverConfig, serverIndex);
+			newCgiRequest.executeCgi();
+			response *newResponse = new response(newCgiRequest.getFilePath(), newCgiRequest.statusCode, serverConfig);
+			clientResponse = newResponse;
+			delete this->baseRequest;
+			this->baseRequest = NULL;
+			delete clientPostRequest;
+			clientPostRequest = NULL;
+		}
 		if (!clientPostRequest->getAllChunksSent()) {
 			try {
 				clientPostRequest->writeBinaryToFile(_request);

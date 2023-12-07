@@ -22,22 +22,18 @@ private:
 	serverConf &_serverConfig;
 	int serverIndex;
 	std::string _scriptPage;
-	std::string _cgiPath;
 	std::string _skriptName;
 	std::string _tempFile;
 	std::string _workingDirectory;
 	int _fileDescriptor;
 	std::string _queryString;
 	std::string _extension;
-	std::string _query;
 	std::string _execExtension;
 	std::string _execPath;
 	std::string _cgiFilePath;
 	std::string _returnFilePath;
 	bool _hasQueryString;
-	int	_errorCode;
 	bool fileIsReady;
-	bool _isError;
 	bool _alarmSignal;	// boolean to check if alarm was activated.
 
 public:

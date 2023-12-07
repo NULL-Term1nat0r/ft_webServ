@@ -105,6 +105,7 @@ void request::printRequest(){
 	std::cout << "is post : " << _post << std::endl;
 	std::cout << "is delete : " << _delete << std::endl;
 	std::cout << "url : " << url << std::endl;
+	std::cout << "fileName: " << fileName << std::endl;
 }
 
 bool request::isMethodConfigured(){

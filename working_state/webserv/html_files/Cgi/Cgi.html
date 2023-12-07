@@ -1,111 +1,3 @@
-<!--<!DOCTYPE html>-->
-<!--<html lang="en">-->
-<!--<head>-->
-<!--    <meta charset="UTF-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
-<!--    <title>Cyberpunk CGI Example</title>-->
-<!--    <style>-->
-<!--        body {-->
-<!--            background-image: url('../resources/neon-car-in-cyberpunk-2077.jpeg');-->
-<!--            background-size: 100% 330%;-->
-<!--            background-position: center;-->
-<!--            background-repeat: no-repeat;-->
-<!--            background-color: #0f0f0f;-->
-<!--            text-align: center;-->
-<!--            overflow: hidden;-->
-<!--            position: relative;-->
-<!--            font-family: 'Courier New', monospace;-->
-<!--            color: #00ff00;-->
-<!--            padding: 20px;-->
-<!--        }-->
-
-<!--        button#mainPageButton {-->
-<!--            font-family: 'Courier New', monospace;-->
-<!--            background-color: rgba(26, 26, 26, 0.8);-->
-<!--            font-size: 24px;-->
-<!--            color: #00ff00;-->
-<!--            border: 1px solid #29b6f6;-->
-<!--            border-radius: 5px;-->
-<!--            padding: 10px 20px;-->
-<!--            cursor: pointer;-->
-<!--            transition: background-color 0.4s ease;-->
-<!--            position: absolute;-->
-<!--            top: -90px;-->
-<!--            left: 50%;-->
-<!--            transform: translateX(-50%);-->
-<!--        }-->
-
-<!--        button#mainPageButton:hover {-->
-<!--            background-color: #29b6f6;-->
-<!--        }-->
-
-<!--        h1, h2 {-->
-<!--            color: #00ff00;-->
-<!--        }-->
-
-<!--        .container {-->
-<!--            position: relative;-->
-<!--        }-->
-
-<!--        .transparent-box {-->
-<!--            background-color: rgba(26, 26, 26, 0.8);-->
-<!--            padding: 20px;-->
-<!--            border: 1px solid #29b6f6;-->
-<!--            border-radius: 5px;-->
-<!--            max-width: 400px;-->
-<!--            margin: 80px auto 20px;-->
-<!--        }-->
-
-<!--        form, .script-box {-->
-<!--            width: 100%;-->
-<!--            box-sizing: border-box;-->
-<!--        }-->
-
-<!--        .script-box input[type="text"], .script-box input[type="submit"] {-->
-<!--            background-color: rgba(26, 26, 26, 0.5);-->
-<!--            color: #00ff00;-->
-<!--            border: 1px solid #29b6f6;-->
-<!--            border-radius: 3px;-->
-<!--            width: calc(100% - 22px);-->
-<!--            margin-bottom: 10px;-->
-<!--            padding: 10px;-->
-<!--        }-->
-
-<!--        .script-box input[type="submit"] {-->
-<!--            cursor: pointer;-->
-<!--            width: 100%;-->
-<!--            background-color: #29b6f6;-->
-<!--            color: #0f0f0f;-->
-<!--        }-->
-<!--    </style>-->
-<!--</head>-->
-<!--<body>-->
-
-<!--<div class="container">-->
-<!--    <button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>-->
-
-<!--    <div class="transparent-box">-->
-<!--        <h1>GET py</h1>-->
-<!--        <h2>Enter your name:</h2>-->
-<!--        <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">-->
-<!--            <input type="text" name="name">-->
-<!--            <input type="submit" value="Submit">-->
-<!--        </form>-->
-<!--    </div>-->
-
-<!--    <div class="transparent-box">-->
-<!--        <h1>GET php</h1>-->
-<!--        <h2>Enter your name:</h2>-->
-<!--        <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">-->
-<!--            <input type="text" name="name">-->
-<!--            <input type="submit" value="Submit">-->
-<!--        </form>-->
-<!--    </div>-->
-<!--</div>-->
-
-<!--</body>-->
-<!--</html>-->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -116,18 +8,19 @@
     <style>
         body {
             background-image: url('../resources/neon-car-in-cyberpunk-2077.jpeg');
-            background-size: 100% 330%;
-            background-position: center;
+            background-size: cover;
+            background-position: top;
             background-repeat: no-repeat;
             background-color: #0f0f0f;
             text-align: center;
-            overflow: hidden;
-            position: relative;
             font-family: 'Courier New', monospace;
             color: #00ff00;
             padding: 20px;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
+        /*Main Page button*/
         button#mainPageButton {
             font-family: 'Courier New', monospace;
             background-color: rgba(26, 26, 26, 0.8);
@@ -148,65 +41,78 @@
             background-color: #29b6f6;
         }
 
-        h1,
-        h2 {
-            color: #00ff00;
-        }
-
-        .transparent-box1 {
+        .center-box,
+        .get-py-box,
+        .get-php-box,
+        .post-py-box,
+        .post-php-box,
+        .run-custom-script-box,
+        .write-script-box {
             background-color: rgba(26, 26, 26, 0.8);
-            padding: 20px;
             border: 1px solid #29b6f6;
             border-radius: 5px;
             max-width: 400px;
-            margin: 20px 0px 0px 625px;
+            margin: 20px auto;
+            position: relative;
         }
 
-        .transparent-box2 {
-            background-color: rgba(26, 26, 26, 0.8);
-            padding: 20px;
-            border: 1px solid #29b6f6;
-            border-radius: 5px;
-            max-width: 400px;
-            margin: -545px 0px 0px 1437px;
-            position: absolute;
+        .center-box {
+            top: 100px;
         }
 
-        form,
-        .script-box {
-            width: 100%;
-            box-sizing: border-box;
+        .get-py-box {
+            top: -28px;
+            left: -500px;
         }
 
-        .script-box input[type="text"],
-        .script-box input[type="Run the Script"],
-        .script-box input[type="submit"] {
+        .get-php-box {
+            top: -262px;
+            right: -500px;
+        }
+
+        .post-py-box {
+            top: -128px;
+            left: -500px;
+        }
+
+        .post-php-box {
+            top: -402px;
+            left: 500px;
+        }
+
+        .run-custom-script-box {
+            bottom: 850px;
+        }
+
+        .write-script-box {
+            bottom: 825px;
+        }
+
+        .script-box input[type="text"] {
             background-color: rgba(26, 26, 26, 0.5);
             color: #00ff00;
             border: 1px solid #29b6f6;
             border-radius: 3px;
-            width: calc(100% - 22px);
+            width: 70%;
             margin-bottom: 10px;
             padding: 10px;
         }
 
         .script-box input[type="submit"] {
             cursor: pointer;
-            width: 100%;
             background-color: #29b6f6;
             color: #0f0f0f;
+            width: 30%;
+            margin-bottom: 10px;
+            padding: 5px;
         }
 
-        /* NEW STUFF */
-        /*Choose a script*/
         label {
             background-color: rgba(26, 26, 26, 0.8);
             font-size: 18px;
             color: #00ff00;
             border: 1px solid #29b6f6;
             border-radius: 5px;
-            margin: 10px;
-            padding: 10px 20px;
             cursor: pointer;
             display: inline-block;
             transition: background-color 0.4s ease;
@@ -217,78 +123,46 @@
             background-color: #29b6f6;
         }
 
-        /* Upload the script */
-        input[type="file"] {
-            font-family: 'Courier New', monospace;
-            background-color: rgba(26, 26, 26, 0.8);
-            font-size: 18px;
-            color: #00ff00;
-            border: 1px solid #29b6f6;
-            border-radius: 5px;
-            margin: 10px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.4s ease;
-        }
-
-        /* Run the Script button */
-        .transparent-box2 input[type="submit"] {
-            cursor: pointer;
-            width: 205px;
-            background-color: #29b6f6;
-            color: #0f0f0f;
-            border: 1px solid #29b6f6;
-            border-radius: 5px;
-            margin: 10px;
-            padding: 10px 20px;
-            transition: background-color 0.4s ease;
-        }
-
-        /* Displayed script */
-        #fileNameDisplay {
-            background-color: rgba(26, 26, 26, 0.8);
-            color: #00ff00;
-            max-width: 40%;
-            margin-bottom: 15px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
         input[type="file"] {
             display: none;
         }
+
     </style>
 
     <script>
-        function updateScriptName() {
-            var input = document.getElementById('scriptToUpload');
-            var scriptNameDisplay = document.getElementById('scriptNameDisplay');
+        function sendScript() {
+            var scriptContent = document.getElementById("customScript").value;
+            var filename =  document.getElementById("filename").value;
 
-            scriptNameDisplay.textContent = input.files[0].name;
-        }
-
-        function confirmScriptExecution() {
-            var confirmExecution = confirm("Do you want to run the uploaded script?");
-            if (confirmExecution) {
-                // Perform action if user confirms
-                alert("Executing script.");
-
-            } else {
-                // Perform action if user cancels
-                alert("Aborting script execution.");
-                window.location.href = 'scriptFailed.html';
-            }
+            fetch('/Cgi/process-script.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'filename=' + encodeURIComponent(filename) + '&customScript=' + encodeURIComponent(scriptContent),
+            })
+                .then(response => response.text())
+                .then(data => {
+                    console.log('Success:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
     </script>
-    <!-- END OF NEW STUFF -->
+
 </head>
 
 <body>
 
 <button id="mainPageButton" onclick="location.href='/index.html'">Main Page</button>
 
-<!-- NEW STUFF -->
-<div class="transparent-box1">
+<div class="center-box">
+    <h1>CGI Example</h1>
+    <p>Here are some examples of CGI scripts.</p>
+</div>
+
+<div class="get-py-box">
     <h1>GET py</h1>
     <h2>Enter your name:</h2>
     <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="get">
@@ -297,28 +171,65 @@
     </form>
 </div>
 
-<div class="transparent-box1">
+<div class="get-php-box">
     <h1>GET php</h1>
     <h2>Enter your name:</h2>
-    <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="get">
+    <form class="script-box" action="Cgi/skripts/skriptPhp.php" method="get">
         <input type="text" name="name">
         <input type="submit" value="Submit">
     </form>
 </div>
-<!-- END OF NEW STUFF -->
 
-<!-- NEW STUFF -->
-<div class="transparent-box2">
-    <h1>Run a script:</h1>
-    <form action="/uploadedScripts" method="post" enctype="multipart/form-data">
+<div class="post-py-box">
+    <h1>POST py</h1>
+    <h2>Enter your name:</h2>
+    <form class="script-box" action="/Cgi/skripts/skriptPython.py" method="post">
+        <input type="text" name="name">
+        <input type="submit" value="Submit">
+        <label for="scriptToUploadPostPy">Choose a script</label>
+        <input type="file" name="scriptToUpload" id="scriptToUploadPostPy" onchange="updateScriptName()">
+        <input type="submit" value="Run the Script" name="submit" onclick="confirmScriptExecution()">
+
+    </form>
+</div>
+
+<div class="post-php-box">
+    <h1>POST php</h1>
+    <h2>Enter your name:</h2>
+    <form class="script-box" action="/Cgi/skripts/skriptPhp.php" method="post">
+        <input type="text" name="name">
+        <input type="submit" value="Submit">
+        <label for="scriptToUploadPostPhp">Choose a script</label>
+        <input type="file" name="scriptToUpload" id="scriptToUploadPostPhp" onchange="updateScriptName()">
+        <input type="submit" value="Run the Script" name="submit" onclick="confirmScriptExecution()">
+    </form>
+</div>
+
+<div class="run-custom-script-box">
+    <h1>Run a script without "query" string:</h1>
+    <form class="script-box" action="/uploadedScripts" method="post" enctype="multipart/form-data">
         <label for="scriptToUpload">Choose a script</label>
         <input type="file" name="scriptToUpload" id="scriptToUpload" onchange="updateScriptName()">
         <div id="scriptNameDisplay"></div>
         <input type="submit" value="Run the Script" name="submit" onclick="confirmScriptExecution()">
     </form>
 </div>
-<!-- END OF NEW STUFF -->
+
+<div class="write-script-box">
+    <h1>Write your own script:</h1>
+    <form action="./upload" method="post" enctype="application/x-www-form-urlencoded" id="script-form">
+        <label for="fileToUpload">Choose a file</label>
+        <input type="file" name="fileToUpload" id="fileToUpload" onchange="updateFileName()">
+        <div id="fileNameDisplay"></div>
+
+        <label for="filename">Enter filename (without extension)</label>
+        <input type="text" name="filename" id="filename">
+
+        <label for="customScript">Write your script:</label>
+        <textarea name="customScript" id="customScript" rows="5" cols="40" placeholder="Write your script here"></textarea>
+
+        <button type="button" onclick="sendScript()">Run Script</button>
+    </form>
+</div>
 
 </body>
-
-</html>
