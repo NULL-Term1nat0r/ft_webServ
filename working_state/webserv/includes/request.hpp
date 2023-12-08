@@ -51,6 +51,7 @@ public:
 	bool isAliveConnection();
 	bool isCloseConnection();
 	bool isMethodConfigured();
+	bool checkPageConfiguration();
 
 
 

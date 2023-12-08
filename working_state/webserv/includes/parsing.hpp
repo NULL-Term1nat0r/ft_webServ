@@ -36,7 +36,7 @@ public:
 	static void decodeUrl(std::string &url);
 	static std::string getFileName(std::string filePath);
 	static std::string constructPage(std::string url);
-	static bool checkIfPageConfigured(std::map<std::string, struct LocationStruc> locations, std::string page);
+	static bool checkIfPageConfigured(std::map<std::string, struct LocationStruc> &locations, std::string page);
 
 };
 

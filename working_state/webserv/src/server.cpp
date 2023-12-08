@@ -186,6 +186,9 @@ void server::runAllServers(char *configFilePath) {
 	for (int i = 0; i < serverConfigs._server.size(); i++) {
 		try{
 			server *serverClass = new server(serverConfigs, i);
+			for(std::map<std::string, LocationStruc>::iterator it = serverClass->serverConfig._server[0].locations.begin(); it != serverClass->serverConfig._server[0].locations.end(); it++){
+				std::cout << "location = " << it->first << std::endl;
+			}
 			servers.push_back(serverClass);
 		}
 		catch (std::exception &e){

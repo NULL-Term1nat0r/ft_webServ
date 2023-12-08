@@ -16,12 +16,18 @@ request::request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, 
 	this->_closeConnection = isCloseConnection();
 	this->page = parsing::constructPage(url);
 	this->page = checkRewrite();
-	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, page);
+	this->isPageConfigured = checkPageConfiguration();
 	this->methodIsValid = isMethodConfigured();
 	printRequest();
 }
 
 request::~request(){
+}
+
+bool request::checkPageConfiguration(){
+	if (page == "")
+		return false;
+	return parsing::checkIfPageConfigured(_serverConfig._server[_serverIndex].locations, page);
 }
 
 bool request::isGetMethod() {
@@ -48,10 +54,10 @@ std::string request::parseFileName(){
 	if (_get){
 		if (url.find('?') != std::string::npos)
 			return url.substr(url.find_last_of('/') + 1, url.find('?') - url.find_last_of('/') - 1);
-		return url.substr(url.find_last_of('/'));
+		return url.substr(url.find_last_of('/') + 1);
 	}
 	if (_post)
-		return parsing::returnValue("filename=", _request, "\r");
+		return parsing::returnValue("filename=", _request, "\r\n" - 1);
 	return "";
 }
 
@@ -78,7 +84,7 @@ std::string request::getRewrite(std::string page){
 
 std::string request::checkRewrite() {
 	std::string tempPage = page;
-	while (_serverConfig._server[_serverIndex].locations[tempPage].rewrite != "") {
+	while ( _serverConfig._server[_serverIndex].locations.find(tempPage) != _serverConfig._server[_serverIndex].locations.end() && _serverConfig._server[_serverIndex].locations[tempPage].rewrite != "") {
 		url = getRewrite(tempPage);
 		tempPage = parsing::constructPage(url);
 	}
@@ -108,7 +114,7 @@ void request::printRequest(){
 }
 
 bool request::isMethodConfigured(){
-	if (!isPageConfigured)
+	if (!isPageConfigured && page != "")
 		return true;
 	if (_serverConfig._server[_serverIndex].locations.empty())
 		return true;
@@ -120,30 +126,6 @@ bool request::isMethodConfigured(){
 		return _serverConfig._server[_serverIndex].locations[page].allowDelete;
 	return false;
 }
-//_serverConfig._server[_serverIndex].locations[_stringURL.substr(pos, pos2)].allowGet)
-
-//bool request::checkPageMethod(std::string method, std::string url, int _serverIndex, serverConf &_serverConfig){
-//	std::string page = parsing::returnPage(url);
-//	std::cout << "pahge string in checkPageMethod: " << page << std::endl;
-//	if (_serverConfig._server[_serverIndex].locations.empty()){
-//		std::cout << "locations empty\n";
-//		return true;
-//	}
-////	std::cout << red << "url: " << url << reset << std::endl; // "/random
-//	if (page != "/")
-//		page = "/" + page;
-//	if (page == "")
-//		return true;
-//	if (method == "GET" && _serverConfig._server[_serverIndex].locations[page].allowGet)
-//		return true;
-//	else if (method == "POST" && _serverConfig._server[_serverIndex].locations[page].allowPost)
-//		return true;
-//	else if (method == "DELETE" && _serverConfig._server[_serverIndex].locations[page].allowDelete)
-//		return true;
-//	else
-//		return false;
-//}
-
 
 bool request::getAliveConnection(){
 	return this->_aliveConnection;
@@ -179,21 +161,3 @@ bool request::getCgiMethod(){
 bool request::getCgi(){
 	return this->_cgi;
 }
-
-
-
-
-//GET /favicon.ico HTTP/1.1\n
-//Host: localhost:8080\n
-//Connection: keep-alive\n
-//sec-ch-ua: Google Chrome;v="117", Not;A=Brand;v=8, Chromium;v=117\n
-//sec-ch-ua-mobile: ?0\n
-//User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36\n
-//sec-ch-ua-platform: macOS\n
-//Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8\n
-//Sec-Fetch-Site: same-origin\n
-//Sec-Fetch-Mode: no-cors\n
-//Sec-Fetch-Dest: image\n
-//Referer: http:localhost:8080/\n
-//Accept-Encoding: gzip, deflate, br\n
-//Accept-Language: en-GB,en-US;q=0.9,en;q=0.8\n

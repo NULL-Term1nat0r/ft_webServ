@@ -153,8 +153,11 @@ std::string parsing::constructPage(std::string url) {
 	}
 }
 
-bool parsing::checkIfPageConfigured(std::map<std::string, struct LocationStruc> locations, std::string page){
+bool parsing::checkIfPageConfigured(std::map<std::string, struct LocationStruc> &locations, std::string page){
 	std::cout << blue << "lokking for page: " << page << reset << std::endl;
+	for(std::map<std::string, LocationStruc>::iterator it = locations.begin(); it != locations.end(); it++){
+		std::cout << "location = " << it->first << std::endl;
+	}
 	if (locations.find(page) != locations.end()){
 		std::cout << green << "compare page " << page << " with " << locations.find(page)->first << reset << std::endl;
 		return true;
@@ -206,4 +209,8 @@ std::string parsing::getErrorPagePath(int errorCode){
 	}
 	return errorFilePath;
 }
+
+//std::string parsing::getErrorMessage(){
+//
+//}
 

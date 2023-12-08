@@ -164,10 +164,7 @@ void server::client::createNewRequest(std::vector<uint8_t> _request){
 		std::cout << "method: " << method << std::endl;
 		if (method == "")
 			return;
-		if (!this->baseRequest->methodIsValid) {
-
-			std::string test = serverConfig.getErrorPage(serverIndex, 405);
-			std::cout << "test: " << test << std::endl;
+		if (!this->baseRequest->methodIsValid && this->baseRequest->page != "") {
 			response *newResponse = new response(serverConfig.getErrorPage(serverIndex, 405), 405, serverConfig);
 			delete this->baseRequest;
 			clientResponse = newResponse;

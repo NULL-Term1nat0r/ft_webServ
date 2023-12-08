@@ -73,6 +73,7 @@ std::string getRequest::NonConfiguredPage() {
 	if (isFile)
 		return constructFilePath();
 	if (isFolder) {
+		std::cout << "isFolder" << std::endl;
 		if (parsing::fileExists("html_files" + url + "/index.html"))
 			return "html_files" + url + "/index.html";
 		else {
