@@ -2,6 +2,6 @@
 <html>
 <head><title>CGI Example</title></head>
 <body>
-<h1>Hello, adgadgadgadg!</h1>
+<h1>Hello, sbadbgad!</h1>
 </body>
 </html>

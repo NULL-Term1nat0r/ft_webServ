@@ -51,22 +51,21 @@ public:
 	std::string parseExtension();
 	std::string setExecExtension();
 	std::string createWorkingDirectoryPath();
+	std::string createCgiFilePath();
 	std::string createExecPath();
 	std::string createTempPath();
 	std::string createQueryString();
 	std::string parseGetRequestPage();
 	std::string parsePostRequestPage();
 	bool checkQueryString();
+	bool checkFilePermissions();
 	bool prepareExecution();
 	void printCgiRequest();
 
 	std::string constructScriptPage(std::vector<std::string> &folderContainer);
 	std::string setScriptPage();
 
-	bool inputCheck();
 	static void handleAlarmSignal(int signal);
-
-	void getErrorHtmlContent(int _errorCode);
 
 	std::string getFilePath();
 };

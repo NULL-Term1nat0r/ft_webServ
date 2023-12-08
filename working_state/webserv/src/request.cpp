@@ -15,7 +15,6 @@ request::request(std::vector<uint8_t> &clientRequest, serverConf &serverConfig, 
 	this->_aliveConnection = isAliveConnection();
 	this->_closeConnection = isCloseConnection();
 	this->page = parsing::constructPage(url);
-	std::cout << blue << "page: " << page << reset << std::endl;
 	this->page = checkRewrite();
 	this->isPageConfigured = parsing::checkIfPageConfigured(_serverConfig._server[serverIndex].locations, page);
 	this->methodIsValid = isMethodConfigured();

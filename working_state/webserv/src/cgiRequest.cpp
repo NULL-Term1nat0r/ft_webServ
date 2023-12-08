@@ -20,7 +20,6 @@ cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serve
 	_cgiFilePath = "";
 	_returnFilePath = "";
 	_alarmSignal = false;
-	_fileDescriptor = 0;
 	_extension = parseExtension();
 	std::cout << "extension: " << _extension << std::endl;
 	_execExtension = setExecExtension();
@@ -29,6 +28,8 @@ cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serve
 	std::cout << "hasQueryString: " << _hasQueryString << std::endl;
 	_scriptPage = setScriptPage();
 	std::cout << "scriptPage: " << _scriptPage << std::endl;
+	_cgiFilePath = createCgiFilePath();
+	std::cout << "cgiFilePath: " << _cgiFilePath << std::endl;
 	_workingDirectory = createWorkingDirectoryPath();
 	std::cout << "workingDirectory: " << _workingDirectory << std::endl;
 	_execPath = createExecPath();
@@ -43,6 +44,10 @@ cgiRequest::cgiRequest(request *baseRequest, serverConf &serverConfig, int serve
 
 cgiRequest::~cgiRequest() {}
 
+std::string cgiRequest::createCgiFilePath(){
+	return "./html_files" + _scriptPage + "/" + _baseRequest->fileName;
+}
+
 bool cgiRequest::cgiCheckLanguage() const {
 
 	if (std::system((_execExtension +  " --version").c_str()))
@@ -50,10 +55,8 @@ bool cgiRequest::cgiCheckLanguage() const {
 	return false;
 }
 
-bool cgiRequest::inputCheck() {
-	//if (!cgiCheckLanguage())
-	//	return false; // error 500
-	if (access(_cgiPath.c_str(), F_OK) != 0) {
+bool cgiRequest::checkFilePermissions() {
+	if (access(_cgiFilePath.c_str(), F_OK) != 0) {
 		std::cerr << "Status 2: Not Found\n" << std::endl;
 		return false;
 	}
@@ -62,11 +65,9 @@ bool cgiRequest::inputCheck() {
 
 std::string cgiRequest::constructScriptPage(std::vector<std::string> &folderContainer) {
 	std::string temp = "";
-	std::cout << "containersize: " << folderContainer.size();
 	for (size_t i = 0; i <= folderContainer.size() - 2; i++) {
 		temp += "/" + folderContainer[i];
 	}
-	std::cout << "constructed cgiFolder: " << _cgiPath << std::endl;
 	return temp;
 }
 
@@ -103,11 +104,6 @@ std::string cgiRequest::parsePostRequestPage() {
 	}
 	return parsing::returnPage(_baseRequest->url);
 }
-
-void cgiRequest::getErrorHtmlContent(int _errorCode) {
-	_cgiFilePath = "./html_files/errorPages/error" + std::to_string(_errorCode) + ".html";
-	_isError = true;
-	}
 
 bool cgiRequest::createTemporaryFile(){
 	_fileDescriptor= open(_tempFile.c_str(), O_TRUNC| O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
@@ -181,52 +177,13 @@ bool cgiRequest::prepareExecution(){
 		std::cout << "file couldn't get created\n";
 		return false;
 	}
+	if (!checkFilePermissions()) {
+		statusCode = 500;
+		std::cout << "file not found\n";
+		return false;
+	}
 	return true;
 }
-
-
-
-//bool cgiRequest::cgiValidExtension(std::string url) {
-//
-//	size_t pos = url.find("?");
-//	if (_hasQueryString) {
-//		_cgiPath = "./html_files" + url.substr(url.find("?"), pos);
-//		_query = "QUERY_STRING=" + url.substr(pos + 1);
-//	}
-//	else
-//		_cgiPath =  "./html_files" + url;
-//	std::cout << "url: " << url << std::endl;
-//	std::cout << "cgiPath: " << _cgiPath << std::endl;
-//	_tempFile = "./html_files/tmp_cgi.txt";
-//	if (_cgiPath.find(".php") != std::string::npos){
-////		std::cout << "php boolean: " << checkExtensionServerConfig(".php") << std::endl;
-////		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[0] << std::endl;
-////		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[1] << std::endl;
-//		if (checkExtensionServerConfig(".php"))
-//			_execExtension = "php";
-//		else
-//			return false;
-//	}
-//	if (_cgiPath.find(".py") != std::string::npos) {
-////		std::cout << "php boolean: " << checkExtensionServerConfig(".php") << std::endl;
-////		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[0] << std::endl;
-////		std::cout << "cgi saved: " << _serverConfig._server[serverIndex].locations[_scriptPage].cgi[1] << std::endl;
-//		if (checkExtensionServerConfig(".py"))
-//			_execExtension = "python3";
-//		else
-//			return false;
-//	}
-//
-//	_execPath = "/usr/bin/" + _execExtension;
-//	std::cout << "execPath: " << _execPath << std::endl;
-//	_skriptName = _cgiPath.substr(_cgiPath.find_last_of("/") + 1);
-//	_workingDirectory = _cgiPath.substr(0, _cgiPath.find(_skriptName) - 1);
-//	if (!createTemporaryFile()) {
-//		std::cout << "file didnt got created\n";
-//		return false;
-//	}
-//	return true;
-//}
 
 void cgiRequest::executeCgi() {
 	if(!prepareExecution())
@@ -279,22 +236,20 @@ void cgiRequest::executeCgi() {
 void cgiRequest::printCgiRequest(){
 	std::cout << yellow << "-------------cgi Values-------------" << reset << std::endl;
 	std::cout << "scriptPage: " << _scriptPage << std::endl;
-	std::cout << "cgiPath: " << _cgiPath << std::endl;
+	std::cout << "cgiPath: " << _cgiFilePath << std::endl;
 	std::cout << "skriptName: " << _baseRequest->fileName << std::endl;
 	std::cout << "tempFile: " << _tempFile << std::endl;
 	std::cout << "workingDirectory: " << _workingDirectory << std::endl;
 	std::cout << "fileDescriptor: " << _fileDescriptor << std::endl;
 	std::cout << "queryString: " << _queryString << std::endl;
 	std::cout << "extension: " << _extension << std::endl;
-	std::cout << "query: " << _query << std::endl;
+	std::cout << "query: " << _hasQueryString << std::endl;
 	std::cout << "execExtension: " << _execExtension << std::endl;
 	std::cout << "execPath: " << _execPath << std::endl;
 	std::cout << "cgiFilePath: " << _cgiFilePath << std::endl;
 	std::cout << "returnFilePath: " << _returnFilePath << std::endl;
 	std::cout << "hasQueryString: " << _hasQueryString << std::endl;
-	std::cout << "errorCode: " << _errorCode << std::endl;
 	std::cout << "fileIsReady: " << fileIsReady << std::endl;
-	std::cout << "isError: " << _isError << std::endl;
 	std::cout << "alarmSignal: " << _alarmSignal << std::endl;
 	std::cout << yellow << "------------------------------------" << reset << std::endl;
 }
