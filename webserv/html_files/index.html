@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Button Page</title>
+
+    <style>
+        body {
+            background-image: url('resources/Yoshito-Hasaka-ci-porta-in-un-universo-cyberpunk-alla-Blade-Runner-Collater.al-12.jpg');
+            background-size: 100% 100%;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-color: #111;
+            text-align: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+        }
+
+        button {
+            font-family: 'Courier New', monospace;
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.4s ease;
+        }
+
+        button:hover {
+            background-color: #29b6f6;
+        }
+
+        #easterEggButton {
+            font-family: 'Courier New', monospace;
+            background: none;
+            border: none;
+            color: transparent;
+            cursor: pointer;
+            outline: none;
+        }
+
+        #easterEggButton:hover {
+            background-color: rgba(26, 26, 26, 0.8);
+            font-size: 24px;
+            color: #00ff00;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            margin: 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .transparent-box {
+            background-color: rgba(26, 26, 26, 0.8);
+            padding: 20px;
+            border: 1px solid #29b6f6;
+            border-radius: 5px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        #randomMessages {
+            font-size: 90px;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+<button onclick="location.href='fileUpload.html'">File Upload</button>
+<button onclick="location.href='cookieTest/cookieTest.html'">Cookie Test</button>
+<button onclick="location.href='Cgi/Cgi.html'">Cgi Test</button>
+<button onclick="location.href='creators.html'">Creators</button>
+<button onclick="location.href='readme.html'">Readme</button>
+
+<button id="easterEggButton" onclick="loadEasterEgg()">Easter Egg</button>
+
+<div class="transparent-box">
+    <div id="randomMessages"></div>
+</div>
+
+<script>
+    const messages = [
+        "Hello!",
+        "Welcome to our webserv!",
+        "It's a piece of shit, but it's our shit!",
+        "Head to 'Readme' for instructions!",
+        "Should I call you mista?",
+    ];
+
+    let currentIndex = 0;
+
+    function updateRandomMessage() {
+        const randomMessagesElement = document.getElementById('randomMessages');
+        randomMessagesElement.style.opacity = 0;
+
+        setTimeout(() => {
+            randomMessagesElement.textContent = messages[currentIndex];
+            randomMessagesElement.style.opacity = 1;
+
+            currentIndex = (currentIndex + 1) % messages.length;
+        }, 1000);
+    }
+
+    updateRandomMessage();
+    setInterval(updateRandomMessage, 6000);
+
+    function loadEasterEgg() {
+        window.location.href = 'easterEgg.html';
+    }
+</script>
+
+</body>
+</html>

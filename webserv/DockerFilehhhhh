@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install g++ valgrind -y
+#RUN apt-get install libreadline6 libreadline6-dev //installs readline if needed
+RUN apt-get update && apt-get install make
+
+docker run -ti -v $(PWD):/test memory-test:0.1 bash -c "cd /test/; make re; ./webserv server.conf"
